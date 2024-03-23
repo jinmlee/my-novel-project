@@ -1,15 +1,17 @@
 package com.jinmlee.novel.dto;
 
 import com.jinmlee.novel.entity.Member;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+@Data
 public class CustomUserDetails implements UserDetails {
 
-    private Member member;
+    private final Member member;
     public CustomUserDetails(Member member){
         this.member = member;
     }

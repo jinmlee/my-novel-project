@@ -1,4 +1,4 @@
-package com.jinmlee.novel.service;
+package com.jinmlee.novel.service.auth;
 
 import com.jinmlee.novel.dto.JoinDto;
 import com.jinmlee.novel.entity.Member;

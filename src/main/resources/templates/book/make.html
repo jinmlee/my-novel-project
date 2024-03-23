@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{/layout/layout :: layout (~{::title}, ~{::main})}"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>책 만들기</title>
+</head>
+<body>
+<main>
+    <div class="container">
+        <form th:action="@{/book/make}" method="post">
+            <h4>책 만들기</h4>
+            <div class="col">
+                <div class="row">
+                    <label for="bookName">책 제목</label>
+                    <input type="text" id="bookName" name="bookName">
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <label for="genre">장르</label>
+                        <select id="genre" name="genre">
+                            <option th:each="genre : ${Genre}" th:value="${genre.name()}"
+                                    th:text="${genre.getGenreName()}"></option>
+                        </select>
+                    </div>
+
+                    <div class="col">
+                        <label for="ageRating">관람등급</label>
+                        <select id="ageRating" name="ageRating">
+                            <option th:each="ageRating : ${AgeRating}" th:value="${ageRating.name()}"
+                                    th:text="${ageRating.getRating()}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label for="bookIntroduction">책 소개</label>
+                    <textarea id="bookIntroduction" name="bookIntroduction" maxlength="300"
+                              style="height: 300px;"></textarea>
+                    <div id="remaining">300글자 남음</div>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-primary w-100 py-2" type="submit">저장</button>
+            </div>
+        </form>
+    </div>
+
+
+    <script>
+        var textarea = document.getElementById('bookIntroduction');
+        var remaining = document.getElementById('remaining');
+
+        textarea.addEventListener('input', function () {
+            var currentLength = this.value.length;
+            var maxLength = this.getAttribute('maxlength');
+            var charsLeft = maxLength - currentLength;
+
+            remaining.textContent = charsLeft + ' 글자 남음';
+        });
+    </script>
+</main>
+</body>
+</html>
