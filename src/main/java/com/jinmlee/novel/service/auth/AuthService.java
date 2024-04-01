@@ -34,4 +34,12 @@ public class AuthService {
                 .build();
         memberRepository.save(dbJoinMember);
     }
+
+    public int idCheck(String userId){
+        if(memberRepository.existsByUserId(userId)){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
 }
