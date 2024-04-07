@@ -1,8 +1,7 @@
 package com.jinmlee.novel.controller;
 
-import com.jinmlee.novel.dto.CustomUserDetails;
+import com.jinmlee.novel.dto.auth.CustomUserDetails;
 import com.jinmlee.novel.dto.book.BookMakeDto;
-import com.jinmlee.novel.entity.Book;
 import com.jinmlee.novel.enums.AgeRating;
 import com.jinmlee.novel.enums.Genre;
 import com.jinmlee.novel.service.book.BookService;
@@ -35,5 +34,13 @@ public class BookController {
                               @AuthenticationPrincipal CustomUserDetails customUserDetails){
         bookService.bookMake(bookMakeDto, customUserDetails);
         return "redirect:/";
+    }
+
+    @GetMapping("/library")
+    public String library(){
+
+
+
+        return "book/library";
     }
 }

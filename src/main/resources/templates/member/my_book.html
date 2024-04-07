@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{layout/layout :: layout (~{::title}, ~{::main})}"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <main>
+      <div th:insert="~{member/my_info_nav :: my_info_nav}"></div>
+
+      <h3>나의 책 목록</h3>
+      <div>
+          <ul class="my-book-list" id="my-book-list">
+              <li th:each="myBook : ${myBookList}">
+                  <span th:text="${myBook.bookId}"></span>
+                  <span th:text="${myBook.bookName}"></span>
+              </li>
+          </ul>
+      </div>
+      <div th:if="${myBookSliceDto.hasNext}">
+          <button id="moreBooks">더 보기</button>
+      </div>
+
+      <script th:inline="javascript">
+          let pageNumber = 0;
+          $(document).ready(function() {
+              $('#moreBooks').click(function() {
+                  $.ajax({
+                      url: '/member/my_book/more',
+                      data: { pageNumber: pageNumber + 1 },
+                      type: 'GET',
+                      success: function(response) {
+                          var myBookList = response.myBookList;
+                          var myBookSliceDto = response.myBookSliceDto;
+                          myBookList.forEach(function(book) {
+                              $('.my-book-list').append('<li><span>' + book.bookId + '</span> <span>' + book.bookName + '</span></li>');
+                          });
+                          if (!myBookSliceDto.hasNext) {
+                              $('#moreBooks').hide();
+                          }
+                          pageNumber++;
+                      }
+                  });
+              });
+          });
+      </script>
+  </main>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>내정보</title>
+</head>
+<body>
+    <main th:fragment="my_info_nav">
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a th:href="@{~/member/my_info}" class="my_info_nav-link nav-link" data-name="my_info" data-bs-toggle="tab" type="button" role="tab">프로필</a>
+                <a class="my_info_nav-link nav-link" data-bs-toggle="tab" type="button" data-name="my-test" role="tab">최근 본 작품</a>
+                <a th:href="@{~/member/my_book}" class="my_info_nav-link nav-link" data-name="my_book" data-bs-toggle="tab" type="button" role="tab">내 작품</a>
+            </div>
+        </nav>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const currentURL = window.location.href;
+
+                const tabs = document.querySelectorAll('.my_info_nav-link');
+
+                tabs.forEach(tab => {
+                    // 탭의 data-name 속성 값을 가져옵니다.
+                    const name = tab.dataset.name;
+
+                    // 현재 URL에 탭의 이름이 포함되어 있는지 확인합니다.
+                    if (currentURL.includes(name)) {
+                        // 이름이 포함되어 있으면 해당 탭에 'active' 클래스를 추가합니다.
+                        tab.classList.add('active');
+                    } else {
+                        // 아니라면 'active' 클래스를 제거합니다.
+                        tab.classList.remove('active');
+                    }
+                });
+            });
+
+        </script>
+    </main>
+</body>
+</html>

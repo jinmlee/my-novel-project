@@ -12,11 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 public class IndexController {
 
+
     @GetMapping("/")
     public String index(Model model){
 
-        String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        model.addAttribute("id", id);
         return "index";
     }
 }

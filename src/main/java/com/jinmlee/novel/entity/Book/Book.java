@@ -1,5 +1,6 @@
-package com.jinmlee.novel.entity;
+package com.jinmlee.novel.entity.Book;
 
+import com.jinmlee.novel.entity.Member;
 import com.jinmlee.novel.enums.AgeRating;
 import com.jinmlee.novel.enums.Genre;
 import jakarta.persistence.*;

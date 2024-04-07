@@ -1,4 +1,4 @@
-package com.jinmlee.novel.dto;
+package com.jinmlee.novel.dto.auth;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
