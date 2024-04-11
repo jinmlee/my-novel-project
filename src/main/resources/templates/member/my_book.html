@@ -6,45 +6,52 @@
     <title>Title</title>
 </head>
 <body>
-  <main>
-      <div th:insert="~{member/my_info_nav :: my_info_nav}"></div>
+<main>
+    <div th:insert="~{member/my_info_nav :: my_info_nav}"></div>
 
-      <h3>나의 책 목록</h3>
-      <div>
-          <ul class="my-book-list" id="my-book-list">
-              <li th:each="myBook : ${myBookList}">
-                  <span th:text="${myBook.bookId}"></span>
-                  <span th:text="${myBook.bookName}"></span>
-              </li>
-          </ul>
-      </div>
-      <div th:if="${myBookSliceDto.hasNext}">
-          <button id="moreBooks">더 보기</button>
-      </div>
+    <h3>나의 책 목록</h3>
+    <div>
+        <ul class="my-book-list" id="my-book-list">
+            <li th:each="myBook : ${myBookList}">
+                <a th:href="@{'/member/my_book/' + ${myBook.getBookId()}}">
+                    <img th:src="${myBook.bookImg != null} ? @{'/upload/' + ${myBook.bookImg}} : @{'/IMG/base_book_img.png'}"/>
+                    <span th:text="${myBook.bookId}"></span>
+                    <span th:text="${myBook.bookName}"></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div th:if="${myBookSliceDto.hasNext}">
+        <button id="moreBooks">더 보기</button>
+    </div>
 
-      <script th:inline="javascript">
-          let pageNumber = 0;
-          $(document).ready(function() {
-              $('#moreBooks').click(function() {
-                  $.ajax({
-                      url: '/member/my_book/more',
-                      data: { pageNumber: pageNumber + 1 },
-                      type: 'GET',
-                      success: function(response) {
-                          var myBookList = response.myBookList;
-                          var myBookSliceDto = response.myBookSliceDto;
-                          myBookList.forEach(function(book) {
-                              $('.my-book-list').append('<li><span>' + book.bookId + '</span> <span>' + book.bookName + '</span></li>');
-                          });
-                          if (!myBookSliceDto.hasNext) {
-                              $('#moreBooks').hide();
-                          }
-                          pageNumber++;
-                      }
-                  });
-              });
-          });
-      </script>
-  </main>
+    <script th:inline="javascript">
+        let pageNumber = 0;
+        $(document).ready(function () {
+            $('#moreBooks').click(function () {
+                $.ajax({
+                    url: '/member/my_book/more',
+                    data: {pageNumber: pageNumber + 1},
+                    type: 'GET',
+                    success: function (response) {
+                        var myBookList = response.myBookList;
+                        var myBookSliceDto = response.myBookSliceDto;
+
+                        myBookList.forEach(function (book) {
+                            var imagePath = book.bookImg ? '/upload/' + book.bookImg : '/IMG/base_book_img.png'; // 예시 경로, 실제 경로로 변경 필요
+                            var bookUrl = '/member/my_book/' + book.bookId;
+                            var bookElement = '<li><a href="' + bookUrl + '"><img src="' + imagePath + '"><span>' + book.bookId + '</span> <span>' + book.bookName + '</span></a></li>';
+                            $('.my-book-list').append(bookElement);
+                        });
+                        if (!myBookSliceDto.hasNext) {
+                            $('#moreBooks').hide();
+                        }
+                        pageNumber++;
+                    }
+                });
+            });
+        });
+    </script>
+</main>
 </body>
 </html>

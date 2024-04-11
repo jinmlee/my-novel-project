@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
@@ -16,4 +17,5 @@ public class BookMakeDto {
     private String bookIntroduction;
     private Genre genre;
     private AgeRating ageRating;
+    private MultipartFile bookImg;
 }

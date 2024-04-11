@@ -1,20 +1,25 @@
 package com.jinmlee.novel.service.book;
 
 
+import com.jinmlee.novel.utils.FileStore;
 import com.jinmlee.novel.dto.auth.CustomUserDetails;
 import com.jinmlee.novel.dto.book.BookMakeDto;
 import com.jinmlee.novel.dto.book.MyBookDto;
 import com.jinmlee.novel.dto.book.MyBookSliceDto;
 import com.jinmlee.novel.entity.Book.Book;
 import com.jinmlee.novel.entity.Member;
+import com.jinmlee.novel.entity.file.FileEntity;
 import com.jinmlee.novel.repository.BookRepository;
+import com.jinmlee.novel.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -22,16 +27,26 @@ import java.util.List;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final FileRepository fileRepository;
+    private final FileStore fileStore;
 
-    public void bookMake(BookMakeDto bookMakeDto, CustomUserDetails customUserDetails){
+    public void bookMake(BookMakeDto bookMakeDto, CustomUserDetails customUserDetails) throws IOException {
 
         Member member = customUserDetails.getMember();
+
+        FileEntity fileEntity = fileStore.storeFile(bookMakeDto.getBookImg());
+
+        if(fileEntity != null) {
+            fileRepository.save(fileEntity);
+        }
+
         Book book = Book.builder()
                 .bookName(bookMakeDto.getBookName())
                 .bookIntroduction(bookMakeDto.getBookIntroduction())
                 .genre(bookMakeDto.getGenre())
                 .ageRating(bookMakeDto.getAgeRating())
                 .member(member)
+                .bookImg(fileEntity)
                 .build();
 
         bookRepository.save(book);

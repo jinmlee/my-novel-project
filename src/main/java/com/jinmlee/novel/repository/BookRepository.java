@@ -12,8 +12,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
 
-    @Query("SELECT new com.jinmlee.novel.dto.book.MyBookDto(b.id, b.bookName) " +
+    @Query("SELECT new com.jinmlee.novel.dto.book.MyBookDto(b.id, b.bookName, i.storeFileName) " +
             "from Book b join b.member m " +
+            "left join b.bookImg i " +
             "where m.id = :loggedId")
     Slice<MyBookDto> findMyBookList(@Param("loggedId") Long loggedId, Pageable pageable);
 }

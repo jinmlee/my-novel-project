@@ -5,14 +5,18 @@ import com.jinmlee.novel.dto.book.BookMakeDto;
 import com.jinmlee.novel.enums.AgeRating;
 import com.jinmlee.novel.enums.Genre;
 import com.jinmlee.novel.service.book.BookService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,7 +35,8 @@ public class BookController {
 
     @PostMapping("/make")
     public String makeProcess(@ModelAttribute BookMakeDto bookMakeDto,
-                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
+                              @AuthenticationPrincipal CustomUserDetails customUserDetails) throws IOException {
+
         bookService.bookMake(bookMakeDto, customUserDetails);
         return "redirect:/";
     }

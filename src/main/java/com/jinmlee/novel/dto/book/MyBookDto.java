@@ -9,4 +9,5 @@ import lombok.*;
 public class MyBookDto {
     private long bookId;
     private String bookName;
+    private String bookImg;
 }

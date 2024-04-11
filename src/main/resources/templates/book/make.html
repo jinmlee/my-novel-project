@@ -8,12 +8,16 @@
 <body>
 <main>
     <div class="container">
-        <form th:action="@{/book/make}" method="post">
+        <form th:action="@{/book/make}" method="post" enctype="multipart/form-data">
             <h4>책 만들기</h4>
             <div class="col">
                 <div class="row">
                     <label for="bookName">책 제목</label>
                     <input type="text" id="bookName" name="bookName">
+                </div>
+                <div class="row">
+                    <label for="bookImg">책 제목</label>
+                    <input type="file" id="bookImg" name="bookImg">
                 </div>
 
                 <div class="row">

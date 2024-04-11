@@ -1,6 +1,7 @@
 package com.jinmlee.novel.entity.Book;
 
 import com.jinmlee.novel.entity.Member;
+import com.jinmlee.novel.entity.file.FileEntity;
 import com.jinmlee.novel.enums.AgeRating;
 import com.jinmlee.novel.enums.Genre;
 import jakarta.persistence.*;
@@ -31,4 +32,8 @@ public class Book {
 
     @Enumerated(EnumType.STRING)
     private AgeRating ageRating;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "file_id")
+    private FileEntity bookImg;
 }
