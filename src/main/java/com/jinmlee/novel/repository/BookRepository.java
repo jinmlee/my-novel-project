@@ -28,4 +28,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "left join b.bookImg i " +
             "where b.id = :bookId")
     BookInfoDto findMyBookInfo(@Param("bookId") Long bookId);
+
+    @Query("select b.bookName from Book b where b.id = :bookId")
+    String findBookName(@Param("bookId") Long bookId);
 }

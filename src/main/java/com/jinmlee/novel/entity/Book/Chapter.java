@@ -1,7 +1,9 @@
 package com.jinmlee.novel.entity.Book;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Chapter {
 
     @Id @GeneratedValue
@@ -21,6 +24,8 @@ public class Chapter {
 
     private String title;
 
+    @Lob
+    @Size(min = 0, max = 50000)
     private String content;
 
     private long hits;

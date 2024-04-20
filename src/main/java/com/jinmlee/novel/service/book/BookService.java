@@ -80,4 +80,8 @@ public class BookService {
         book.modify(bookMakeDto, fileEntity);
         bookRepository.save(book);
     }
+
+    public String getBookName(Long bookId){
+        return bookRepository.findBookName(bookId);
+    }
 }

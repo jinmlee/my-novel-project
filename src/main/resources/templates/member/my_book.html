@@ -27,7 +27,7 @@
                     <div class="col-5 d-flex align-items-center">
                         <div class="row-5">
                             <a th:href="@{/book/modify/{bookId}(bookId = ${myBook.bookId})}"><div class="btn btn-outline-dark col me-2">작품 정보 수정</div></a>
-                            <a><div class="btn btn-outline-dark col me-2">회차/공지 쓰기</div></a>
+                            <a th:href="@{/chapter/make/{bookId}(bookId = ${myBook.bookId})}"><div class="btn btn-outline-dark col me-2">회차/공지 쓰기</div></a>
                         </div>
                     </div>
                 </div>

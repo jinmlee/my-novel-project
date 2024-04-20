@@ -1,5 +1,8 @@
 package com.jinmlee.novel.dto.book;
 
+import com.jinmlee.novel.entity.Book.Book;
+import com.jinmlee.novel.entity.Book.Chapter;
+import com.jinmlee.novel.entity.Member;
 import lombok.*;
 
 @Getter @Setter
@@ -7,7 +10,14 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class ChapterMakeDto {
-    private Long bookId;
     private String content;
     private String title;
+
+    public Chapter toEntity(Book book){
+        return Chapter.builder()
+                .title(this.title)
+                .content(this.content)
+                .book(book)
+                .build();
+    }
 }
