@@ -21,21 +21,11 @@
                 </div>
 
                 <div class="row">
-                    <div class="col">
                         <label for="genre">장르</label>
                         <select id="genre" name="genre">
                             <option th:each="genre : ${Genre}" th:value="${genre.name()}"
                                     th:text="${genre.getGenreName()}"></option>
                         </select>
-                    </div>
-
-                    <div class="col">
-                        <label for="ageRating">관람등급</label>
-                        <select id="ageRating" name="ageRating">
-                            <option th:each="ageRating : ${AgeRating}" th:value="${ageRating.name()}"
-                                    th:text="${ageRating.getRating()}"></option>
-                        </select>
-                    </div>
                 </div>
 
                 <div class="row">

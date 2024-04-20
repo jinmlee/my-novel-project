@@ -16,6 +16,5 @@ public class BookMakeDto {
     private String bookName;
     private String bookIntroduction;
     private Genre genre;
-    private AgeRating ageRating;
     private MultipartFile bookImg;
 }

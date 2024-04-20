@@ -1,0 +1,8 @@
+a {
+    text-decoration: none; /* 밑줄 제거 */
+    color: inherit; /* 부모 요소의 글자 색상 상속 */
+}
+
+li {
+    list-style-type: none; /* 목록 앞의 마커 제거 */
+}

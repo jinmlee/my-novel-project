@@ -1,5 +1,6 @@
 package com.jinmlee.novel.repository;
 
+import com.jinmlee.novel.dto.book.BookInfoDto;
 import com.jinmlee.novel.dto.book.MyBookDto;
 import com.jinmlee.novel.entity.Book.Book;
 import org.springframework.data.domain.Pageable;
@@ -17,4 +18,14 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "left join b.bookImg i " +
             "where m.id = :loggedId")
     Slice<MyBookDto> findMyBookList(@Param("loggedId") Long loggedId, Pageable pageable);
+
+    @Query("SELECT COUNT(b) > 0 FROM Book b WHERE b.id = :bookId AND b.member.id = :userId")
+    boolean existsByIdAndMemberId(@Param("bookId") Long bookId, @Param("userId") Long userId);
+
+    @Query("select new com.jinmlee.novel.dto.book.BookInfoDto(b.id, m.nickname, b.bookName, b.bookIntroduction, b.genre, i.storeFileName) " +
+            "from Book b " +
+            "join b.member m " +
+            "left join b.bookImg i " +
+            "where b.id = :bookId")
+    BookInfoDto findMyBookInfo(@Param("bookId") Long bookId);
 }

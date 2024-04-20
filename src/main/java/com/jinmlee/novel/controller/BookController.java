@@ -1,6 +1,7 @@
 package com.jinmlee.novel.controller;
 
 import com.jinmlee.novel.dto.auth.CustomUserDetails;
+import com.jinmlee.novel.dto.book.BookInfoDto;
 import com.jinmlee.novel.dto.book.BookMakeDto;
 import com.jinmlee.novel.enums.AgeRating;
 import com.jinmlee.novel.enums.Genre;
@@ -29,7 +30,6 @@ public class BookController {
     public String make(Model model){
 
         model.addAttribute("Genre", Genre.values());
-        model.addAttribute("AgeRating", AgeRating.values());
         return "book/make";
     }
 
@@ -43,9 +43,26 @@ public class BookController {
 
     @GetMapping("/library")
     public String library(){
-
-
-
         return "book/library";
+    }
+
+    @GetMapping("/modify/{bookId}")
+    public String modifyBook(@PathVariable(name = "bookId") Long bookId,
+                             Model model){
+        BookInfoDto bookInfoDto = bookService.getMyBookInfo(bookId);
+        model.addAttribute("Genre", Genre.values());
+        model.addAttribute("bookId", bookId);
+        model.addAttribute("bookInfo", bookInfoDto);
+
+        return "book/modify";
+    }
+
+    @PostMapping("/modify/{bookId}")
+    public String modifyBookProcess(@PathVariable(name = "bookId") Long bookId,
+                                    @ModelAttribute BookMakeDto bookMakeDto) throws IOException {
+
+        bookService.modifyBook(bookMakeDto, bookId);
+
+        return "redirect:/member/my_book/" + bookId;
     }
 }

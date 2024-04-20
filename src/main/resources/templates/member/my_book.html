@@ -7,17 +7,30 @@
 </head>
 <body>
 <main>
-    <div th:insert="~{member/my_info_nav :: my_info_nav}"></div>
+    <div th:insert="~{fragment/my_info_nav :: my_info_nav}"></div>
 
-    <h3>나의 책 목록</h3>
     <div>
         <ul class="my-book-list" id="my-book-list">
-            <li th:each="myBook : ${myBookList}">
-                <a th:href="@{'/member/my_book/' + ${myBook.getBookId()}}">
-                    <img th:src="${myBook.bookImg != null} ? @{'/upload/' + ${myBook.bookImg}} : @{'/IMG/base_book_img.png'}"/>
-                    <span th:text="${myBook.bookId}"></span>
-                    <span th:text="${myBook.bookName}"></span>
-                </a>
+            <li class="m-3" th:each="myBook : ${myBookList}">
+                <div class="row d-flex justify-content-between">
+                    <a class="col" th:href="@{'/member/my_book/' + ${myBook.getBookId()}}">
+                        <div class="row">
+                            <div class="col-auto">
+                                <img th:src="${myBook.bookImg != null} ? @{'/upload/' + ${myBook.bookImg}} : @{'/IMG/base_book_img.png'}"
+                                     style="border-radius: 10px; width: 120px;height: 150px;"/>
+                            </div>
+                            <div class="col d-flex align-items-center">
+                                <h3 th:text="${myBook.bookName}"></h3>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="col-5 d-flex align-items-center">
+                        <div class="row-5">
+                            <a th:href="@{/book/modify/{bookId}(bookId = ${myBook.bookId})}"><div class="btn btn-outline-dark col me-2">작품 정보 수정</div></a>
+                            <a><div class="btn btn-outline-dark col me-2">회차/공지 쓰기</div></a>
+                        </div>
+                    </div>
+                </div>
             </li>
         </ul>
     </div>

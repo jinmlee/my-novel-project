@@ -1,10 +1,12 @@
 package com.jinmlee.novel.entity.Book;
 
+import com.jinmlee.novel.dto.book.BookMakeDto;
 import com.jinmlee.novel.entity.Member;
 import com.jinmlee.novel.entity.file.FileEntity;
 import com.jinmlee.novel.enums.AgeRating;
 import com.jinmlee.novel.enums.Genre;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,15 +27,24 @@ public class Book {
     private Member member;
 
     private String bookName;
+
+    @Lob
+    @Size(min = 0, max = 300)
     private String bookIntroduction;
 
     @Enumerated(EnumType.STRING)
     private Genre genre;
 
-    @Enumerated(EnumType.STRING)
-    private AgeRating ageRating;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "file_id")
     private FileEntity bookImg;
+
+    public void modify(BookMakeDto bookMakeDto, FileEntity fileEntity){
+        this.bookName = bookMakeDto.getBookName();
+        this.genre = bookMakeDto.getGenre();
+        this.bookIntroduction = bookMakeDto.getBookIntroduction();
+        if(fileEntity != null){
+            this.bookImg = fileEntity;
+        }
+    }
 }

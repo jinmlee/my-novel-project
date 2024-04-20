@@ -1,6 +1,7 @@
 package com.jinmlee.novel.controller;
 
 import com.jinmlee.novel.dto.auth.CustomUserDetails;
+import com.jinmlee.novel.dto.book.BookInfoDto;
 import com.jinmlee.novel.dto.book.MyBookDto;
 import com.jinmlee.novel.dto.book.MyBookSliceDto;
 import com.jinmlee.novel.service.Member.MemberService;
@@ -55,5 +56,17 @@ public class MemberController {
         response.put("myBookList", myBookList);
         response.put("myBookSliceDto", myBookSliceDto);
         return response;
+    }
+
+
+    @GetMapping("/my_book/{bookId}")
+    public String myBookInfo(@PathVariable(name="bookId") Long bookId, Model model,
+                             @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        if(bookService.existsMyBook(bookId, customUserDetails.getMember().getId())){
+            model.addAttribute("myBookInfo", bookService.getMyBookInfo(bookId));
+        }else {
+            throw new IllegalArgumentException("책을 작성한 사람만 접속할 수 있습니다.");
+        }
+        return "member/my_book_info";
     }
 }
