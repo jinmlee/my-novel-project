@@ -67,8 +67,12 @@ public class BookService {
         return bookRepository.existsByIdAndMemberId(bookId, userId);
     }
 
-    public BookInfoDto getMyBookInfo(Long bookId){
-        return bookRepository.findMyBookInfo(bookId);
+    public BookInfoDto getBookInfo(Long bookId){
+        return bookRepository.findBookInfo(bookId);
+    }
+
+    public List<BookInfoDto> getBookInfoList(){
+        return bookRepository.findBookInfoList();
     }
 
     public void modifyBook(BookMakeDto bookMakeDto, Long bookId) throws IOException {

@@ -61,4 +61,12 @@ public class ChapterController {
 
         return "redirect:/member/my_book";
     }
+
+    @GetMapping("/view/{chapterId}")
+    public String viewChapter(@PathVariable(name = "chapterId") Long chapterId,
+                              Model model){
+
+        model.addAttribute("chapterInfo", chapterService.getChapterInfo(chapterId));
+        return "chapter/view";
+    }
 }

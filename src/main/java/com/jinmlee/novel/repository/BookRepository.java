@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
 
@@ -27,7 +29,14 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "join b.member m " +
             "left join b.bookImg i " +
             "where b.id = :bookId")
-    BookInfoDto findMyBookInfo(@Param("bookId") Long bookId);
+    BookInfoDto findBookInfo(@Param("bookId") Long bookId);
+
+
+    @Query("select new com.jinmlee.novel.dto.book.BookInfoDto(b.id, m.nickname, b.bookName, b.bookIntroduction, b.genre, i.storeFileName) " +
+            "from Book b " +
+            "join b.member m " +
+            "left join b.bookImg i")
+    List<BookInfoDto> findBookInfoList();
 
     @Query("select b.bookName from Book b where b.id = :bookId")
     String findBookName(@Param("bookId") Long bookId);

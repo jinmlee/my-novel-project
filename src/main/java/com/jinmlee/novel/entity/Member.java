@@ -1,5 +1,6 @@
 package com.jinmlee.novel.entity;
 
+import com.jinmlee.novel.entity.base.BaseTimeEntity;
 import com.jinmlee.novel.enums.MyRole;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +11,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 @AllArgsConstructor
 @Builder
 @Getter
-public class Member {
+public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "member_id")

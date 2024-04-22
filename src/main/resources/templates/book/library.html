@@ -8,8 +8,33 @@
 <body>
 <main>
     <div class="container">
-        
-        im library
+        <ul class="p-0 d-flex justify-content-center">
+            <li class="m-3" th:each="book : ${bookList}">
+                <a th:href="@{/book/view/{bookId}(bookId = ${book.bookId})}">
+                    <div class="card">
+                        <div class="card-body row g-0">
+                            <div class="col-auto m-3">
+                                <img th:src="${book.bookImg != null} ? @{'/upload/' + ${book.bookImg}} : @{'/IMG/base_book_img.png'}"
+                                     style="border-radius: 10px;width: 200px;height: 250px;">
+                            </div>
+                            <div class="col-md-3 m-3 d-flex align-items-start flex-column bd-highlight">
+                                <div class="mb-auto bd-highlight">
+                                    <h3 class="card-title fw-bolder" th:text="${book.bookName}"></h3>
+                                    <div class="fw-bolder" th:text="${book.author}"></div>
+                                </div>
+                                <div class="bd-highlight row">
+                                    <div class="col-auto me-2">장르</div>
+                                    <div class="col-auto" th:text="${book.genre.getGenreName()}">장르</div>
+                                </div>
+                            </div>
+                            <div class="col-md-5 m-3">
+                                <div th:text="${book.bookIntro}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </li>
+        </ul>
     </div>
 </main>
 

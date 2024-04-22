@@ -1,6 +1,7 @@
 package com.jinmlee.novel.entity.Book;
 
 import com.jinmlee.novel.dto.book.chapter.ChapterMakeDto;
+import com.jinmlee.novel.entity.base.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Chapter {
+public class Chapter extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "chapter_id")

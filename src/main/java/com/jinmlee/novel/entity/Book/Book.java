@@ -2,8 +2,8 @@ package com.jinmlee.novel.entity.Book;
 
 import com.jinmlee.novel.dto.book.BookMakeDto;
 import com.jinmlee.novel.entity.Member;
+import com.jinmlee.novel.entity.base.BaseTimeEntity;
 import com.jinmlee.novel.entity.file.FileEntity;
-import com.jinmlee.novel.enums.AgeRating;
 import com.jinmlee.novel.enums.Genre;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
-public class Book {
+public class Book extends BaseTimeEntity {
     @Id @GeneratedValue
     @Column(name = "book_id")
     private Long id;

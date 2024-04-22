@@ -1,5 +1,6 @@
 package com.jinmlee.novel.repository;
 
+import com.jinmlee.novel.dto.book.chapter.ChapterInfoDto;
 import com.jinmlee.novel.dto.book.chapter.ChapterListDto;
 import com.jinmlee.novel.dto.book.chapter.ChapterModifyDto;
 import com.jinmlee.novel.entity.Book.Chapter;
@@ -19,4 +20,9 @@ public interface ChapterRepository extends JpaRepository<Chapter, Long> {
             "join c.book b " +
             "where c.id = :chapterId")
     ChapterModifyDto findChapterModifyInfo(@Param("chapterId") Long chapterId);
+
+    @Query("select new com.jinmlee.novel.dto.book.chapter.ChapterInfoDto(c.id, c.title, c.content, b.id, b.bookName) from Chapter c " +
+            "join c.book b " +
+            "where c.id = :chapterId")
+    ChapterInfoDto findChapterInfo(@Param("chapterId") Long chapterId);
 }

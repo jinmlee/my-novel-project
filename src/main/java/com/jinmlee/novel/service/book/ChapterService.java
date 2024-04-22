@@ -1,5 +1,6 @@
 package com.jinmlee.novel.service.book;
 
+import com.jinmlee.novel.dto.book.chapter.ChapterInfoDto;
 import com.jinmlee.novel.dto.book.chapter.ChapterListDto;
 import com.jinmlee.novel.dto.book.chapter.ChapterMakeDto;
 import com.jinmlee.novel.dto.book.chapter.ChapterModifyDto;
@@ -20,8 +21,12 @@ public class ChapterService {
     private final BookRepository bookRepository;
     public void makeChapter(ChapterMakeDto chapterMakeDto, Long bookId){
         Optional<Book> book = bookRepository.findById(bookId);
+        chapterMakeDto.setContent(formatNewLines(chapterMakeDto.getContent()));
         Chapter chapter = chapterMakeDto.toEntity(book.get());
         chapterRepository.save(chapter);
+    }
+    public String formatNewLines(String content) {
+        return content.replace("\n", "<br/>");
     }
 
     public List<ChapterListDto> getChapterList(Long bookId){
@@ -34,11 +39,14 @@ public class ChapterService {
 
     public void modifyChapter(ChapterMakeDto chapterMakeDto, Long chapterId){
         Optional<Chapter> findChapter = chapterRepository.findById(chapterId);
-        Chapter chapter = null;
         if(findChapter.isPresent()){
-            chapter = findChapter.get();
+            Chapter chapter = findChapter.get();
             chapter.modify(chapterMakeDto);
             chapterRepository.save(chapter);
         }
+    }
+
+    public ChapterInfoDto getChapterInfo(Long chapterId){
+        return chapterRepository.findChapterInfo(chapterId);
     }
 }

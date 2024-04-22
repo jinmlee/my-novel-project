@@ -65,7 +65,7 @@ public class MemberController {
     public String myBookInfo(@PathVariable(name="bookId") Long bookId, Model model,
                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
         if(bookService.existsMyBook(bookId, customUserDetails.getMember().getId())){
-            model.addAttribute("myBookInfo", bookService.getMyBookInfo(bookId));
+            model.addAttribute("myBookInfo", bookService.getBookInfo(bookId));
             model.addAttribute("chapterList", chapterService.getChapterList(bookId));
         }else {
             throw new IllegalArgumentException("책을 작성한 사람만 접속할 수 있습니다.");
