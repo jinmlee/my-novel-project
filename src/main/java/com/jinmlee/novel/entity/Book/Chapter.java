@@ -1,5 +1,6 @@
 package com.jinmlee.novel.entity.Book;
 
+import com.jinmlee.novel.dto.book.chapter.ChapterMakeDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ public class Chapter {
 
     @Id @GeneratedValue
     @Column(name = "chapter_id")
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
@@ -29,4 +30,9 @@ public class Chapter {
     private String content;
 
     private long hits;
+
+    public void modify(ChapterMakeDto chapterMakeDto){
+        this.title = chapterMakeDto.getTitle();
+        this.content = chapterMakeDto.getContent();
+    }
 }

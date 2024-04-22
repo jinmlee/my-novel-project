@@ -1,4 +1,4 @@
-package com.jinmlee.novel.dto.book;
+package com.jinmlee.novel.dto.book.chapter;
 
 import com.jinmlee.novel.entity.Book.Book;
 import com.jinmlee.novel.entity.Book.Chapter;

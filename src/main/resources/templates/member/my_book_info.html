@@ -8,7 +8,7 @@
 <body>
 <main>
     <div th:insert="~{fragment/my_info_nav :: my_info_nav}"></div>
-    <div th:object="${myBookInfo}">
+    <div class="mb-5 border-bottom border-success" th:object="${myBookInfo}">
         <div class="info-group row mt-5 mb-5">
             <div class="col-auto">
                 <img th:src="${myBookInfo.bookImg != null} ? @{'/upload/' + ${myBookInfo.bookImg}} : @{'/IMG/base_book_img.png'}" style="border-radius: 10px;width: 200px;height: 250px;">
@@ -21,12 +21,21 @@
                     <div class="text-break" th:text="${myBookInfo.getBookIntro()}"></div>
                 </div>
                 <div class="ap-2 bd-highlight">
-                    <div class="btn btn-outline-dark col m-2">작품 정보 수정</div>
-                    <div class="btn btn-outline-dark col m-2">회차/공지 쓰기</div>
+                    <a th:href="@{/book/modify/{bookId}(bookId = ${myBookInfo.bookId})}"><div class="btn btn-outline-dark col m-2">작품 정보 수정</div></a>
+                    <a th:href="@{/chapter/make/{bookId}(bookId = ${myBookInfo.bookId})}"><div class="btn btn-outline-dark col m-2">회차/공지 쓰기</div></a>
                 </div>
             </div>
         </div>
+        <div class="chapterList">
+            <ul>
+                <li class="m-3" th:each="chapter : ${chapterList}">
+                    <a><div class="h5" th:text="${chapter.title}"></div></a>
+                    <a th:href="@{/chapter/modify/{bookId}/{chapterId}(bookId = ${myBookInfo.bookId}, chapterId = ${chapter.id})}">수정하기</a>
+                </li>
+            </ul>
+        </div>
     </div>
+
 </main>
 </body>
 </html>

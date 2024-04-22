@@ -6,6 +6,7 @@ import com.jinmlee.novel.dto.book.MyBookDto;
 import com.jinmlee.novel.dto.book.MyBookSliceDto;
 import com.jinmlee.novel.service.Member.MemberService;
 import com.jinmlee.novel.service.book.BookService;
+import com.jinmlee.novel.service.book.ChapterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final BookService bookService;
+    private final ChapterService chapterService;
 
     @GetMapping("/my_info")
     public String myInfo(){
@@ -64,6 +66,7 @@ public class MemberController {
                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
         if(bookService.existsMyBook(bookId, customUserDetails.getMember().getId())){
             model.addAttribute("myBookInfo", bookService.getMyBookInfo(bookId));
+            model.addAttribute("chapterList", chapterService.getChapterList(bookId));
         }else {
             throw new IllegalArgumentException("책을 작성한 사람만 접속할 수 있습니다.");
         }
