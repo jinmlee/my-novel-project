@@ -8,8 +8,8 @@
 <body>
 <main>
     <div class="container">
-        <ul class="p-0 d-flex justify-content-center">
-            <li class="m-3" th:each="book : ${bookList}">
+        <ul class="row p-0 d-flex justify-content-center">
+            <li class="m-3 col-12" th:each="book : ${bookList}">
                 <a th:href="@{/book/view/{bookId}(bookId = ${book.bookId})}">
                     <div class="card">
                         <div class="card-body row g-0">

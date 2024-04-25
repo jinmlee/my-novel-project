@@ -1,59 +1,74 @@
 <!DOCTYPE html>
-<html lang="en" th:replace="~{/layout/layout :: layout (~{::title}, ~{::main})}"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en" th:replace="layout/layout :: layout (~{::title}, ~{::main})"
+      xmlns:th="http://www.thymeleaf.org" xmlns:with="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>책 만들기</title>
+    <title>회차/공지 작성</title>
 </head>
 <body>
 <main>
     <div class="container">
         <form th:action="@{/book/make}" method="post" enctype="multipart/form-data">
-            <h4>책 만들기</h4>
-            <div class="col">
-                <div class="row">
-                    <label for="bookName">책 제목</label>
-                    <input type="text" id="bookName" name="bookName">
-                </div>
-                <div class="row">
-                    <label for="bookImg">책 제목</label>
-                    <input type="file" id="bookImg" name="bookImg">
+            <div class="border border-success">
+                <div class="border-bottom">
+                    <h4 class="m-4 text-black-50">새 작품 쓰기</h4>
                 </div>
 
-                <div class="row">
-                        <label for="genre">장르</label>
-                        <select id="genre" name="genre">
-                            <option th:each="genre : ${Genre}" th:value="${genre.name()}"
-                                    th:text="${genre.getGenreName()}"></option>
-                        </select>
+                <div class="d-flex justify-content-center">
+                    <div class="border-bottom row w-100">
+                        <div class="fw-bolder ms-4 col-auto d-flex align-items-center">제목</div>
+                        <input class="m-4 col form-control" type="text" id="bookName" name="bookName">
+                    </div>
                 </div>
 
-                <div class="row">
-                    <label for="bookIntroduction">책 소개</label>
-                    <textarea id="bookIntroduction" name="bookIntroduction" maxlength="300"
-                              style="height: 300px;"></textarea>
-                    <div id="remaining">300글자 남음</div>
+                <div class="d-flex justify-content-center">
+                    <div class="border-bottom row w-100">
+                        <div class="fw-bolder ms-4 col-auto d-flex align-items-center">책 사진</div>
+                        <input type="file" class="form-control m-4 col" id="bookImg" name="bookImg">
+                    </div>
                 </div>
-            </div>
-            <div>
-                <button class="btn btn-primary w-100 py-2" type="submit">저장</button>
+
+                <div class="d-flex justify-content-center">
+                    <div class="border-bottom row w-100">
+                        <label class="fw-bolder ms-4 col-auto d-flex align-items-center" th:text="장르" for="genre">
+                        </label><select class="form-control m-4 col" id="genre" name="genre">
+                        <option th:each="genre : ${Genre}" th:value="${genre.name()}"
+                                th:text="${genre.getGenreName()}"></option>
+                    </select>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <div class="border-bottom row w-100">
+                        <label class="m-4 fw-bolder" for="bookIntroduction">책 소개</label>
+                        <textarea class="form-control border-bottom" id="bookIntroduction" maxlength="300"
+                                  name="bookIntroduction" style="height: 300px;"></textarea>
+                        <div id="remaining"></div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="m-4 btn btn-outline-info">등록</button>
+                </div>
             </div>
         </form>
     </div>
+</main>
+</body>
+</html>
 
 
-    <script>
-        var textarea = document.getElementById('bookIntroduction');
-        var remaining = document.getElementById('remaining');
+<script>
+    var textarea = document.getElementById('bookIntroduction');
+    var remaining = document.getElementById('remaining');
 
-        textarea.addEventListener('input', function () {
-            var currentLength = this.value.length;
-            var maxLength = this.getAttribute('maxlength');
-            var charsLeft = maxLength - currentLength;
+    textarea.addEventListener('input', function () {
+        var currentLength = this.value.length;
+        var maxLength = this.getAttribute('maxlength');
+        var charsLeft = maxLength - currentLength;
 
-            remaining.textContent = charsLeft + ' 글자 남음';
-        });
-    </script>
+        remaining.textContent = charsLeft + ' 글자 남음';
+    });
+</script>
 </main>
 </body>
 </html>

@@ -8,7 +8,7 @@
 <body>
 <main>
     <div class="container">
-        <div class="chapter-box border border-black" th:object="${chapterInfo}" style="min-height: 1000px">
+        <div class="chapter-box border" th:object="${chapterInfo}" style="min-height: 1000px">
             <div class="border-bottom m-5 mt-5">
                 <div class="h3 fw-bolder m-5" th:text="${chapterInfo.bookName}"></div>
             </div>
@@ -23,8 +23,112 @@
                 </div>
             </div>
         </div>
+
+        <div class="row comment-box border m-0 mt-5">
+            <div class="fw-bolder m-3">댓글</div>
+            <div class="col-12">
+                <div class="ms-3 me-3 border border-black">
+                    <div class="m-3 fw-bolder" th:text="${loggedNickname}"></div>
+                    <textarea class="form-control" name="comment" id="comment-text"
+                              placeholder="주제와 무관한 댓글이나 스포일러, 악플은 경고조치 없이 삭제되며 징계 대상이 될 수 있습니다."
+                              style="border: none; outline: none; resize: none; height: 100px;"></textarea>
+                    <div class="border-top d-flex flex-row-reverse bd-highlight">
+                        <button type="submit" id="submit" class="p-2 ps-3 pe-3 bd-highlight"
+                                style="background-color: forestgreen; color: white; ">등록
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <ul class="m-0 p-0 comment-list">
+                    <li class="m-3 border-bottom" th:each="comment : ${commentList}" th:data-comment-id="${comment.commentId}">
+                        <div class="fw-bolder m-1 mb-2" th:text="${comment.userName}"></div>
+                        <div class="m-1" id="commented" th:text="${comment.comment}"></div>
+<!--                        <div class="m-1">-->
+<!--                            <div class="text-black-50 fs-6" th:text="${comment.createdDate}"></div>-->
+<!--                        </div>-->
+                        <div class="m-1 d-flex justify-content-between w-100">
+                            <div class="m-0 text-black-50 fs-6" th:text="${comment.createdDate}"></div>
+                            <div class="row m-0">
+                                <button class="btn-outline-primary reaction-button col btn btn-close-white border m-1"
+                                        th:classappend="${comment.loggedReaction == 1} ? 'active'" th:value="1">
+                                    <img th:src="@{/IMG/free-icon-thumbs-up-12709173.png}" style="height: 20px">
+                                    <span class="badge bg-white text-black" th:text="${comment.goodPoint}"></span>
+                                </button>
+                                <button class="btn-outline-danger reaction-button col btn btn-close-white border m-1"
+                                        th:classappend="${comment.loggedReaction == -1} ? 'active'" th:value="-1">
+                                    <img th:src="@{/IMG/free-icon-thumbs-down-14507870.png}" style="height: 20px">
+                                    <span class="badge bg-white text-black" th:text="${comment.badPoint}"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 
+    <script th:inline="javascript">
+        $(document).ready(function () {
+
+            $('.reaction-button').click(function (){
+                var commentId = $(this).closest('li').data('commentId')
+                var reactionPoint = $(this).val();
+                var $this = $(this)
+                var $badge = $this.find('span.badge');
+                var badgeVal = parseInt($badge.text());
+                var activeCheck = $this.hasClass('active') ? 1 : 0
+
+                $.ajax({
+                    url: '/comment/addReaction',
+                    type: 'POST',
+                    data: {
+                        commentId: commentId,
+                        reactionPoint: reactionPoint
+                    },
+                    success: function () {
+                        if(activeCheck === 0){
+                            $this.addClass('active');
+                            $badge.text(badgeVal + 1)
+                        }else {
+                            $this.removeClass('active');
+                            $badge.text(badgeVal - 1)
+                        }
+                    },
+                    error: function (err) {
+                        if(err.responseJSON){
+                        alert(err.responseJSON.message);
+                        }
+                    }
+
+                })
+
+            })
+
+
+            $('#submit').click(function () {
+                var commentText = $('#comment-text').val();
+                var chapterId = [[${chapterInfo.chapterId}]];
+
+                $.ajax({
+                    url: '/comment/make',
+                    type: 'POST',
+                    data: {
+                        comment: commentText,
+                        chapterId: chapterId
+                    },
+                    success: function (response) {
+                        // 댓글 추가 성공 시
+                        // $('#commentsContainer').append('<div>' + response.comment + '</div>'); // 새 댓글을 댓글 컨테이너에 추가
+                        $('#comment-text').val(''); // 텍스트에리어 비우기
+                    },
+                    error: function () {
+                        alert('댓글 추가에 실패했습니다.');
+                    }
+                })
+            })
+        })
+    </script>
 
 </main>
 </body>
