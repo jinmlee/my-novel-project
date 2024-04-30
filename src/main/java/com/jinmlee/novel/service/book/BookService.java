@@ -13,7 +13,6 @@ import com.jinmlee.novel.entity.file.FileEntity;
 import com.jinmlee.novel.repository.BookRepository;
 import com.jinmlee.novel.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -54,7 +53,7 @@ public class BookService {
     }
 
     public List<MyBookDto> getMyBookList(long memberId, MyBookSliceDto myBookSliceDto){
-        Pageable pageable = PageRequest.of(myBookSliceDto.getNumber(), myBookSliceDto.getSize(), Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(myBookSliceDto.getNumber(), myBookSliceDto.getSize(), Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Slice<MyBookDto> myBookDtoSlice = bookRepository.findMyBookList(memberId, pageable);
         myBookSliceDto.set(myBookDtoSlice);

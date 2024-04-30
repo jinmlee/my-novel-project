@@ -39,14 +39,17 @@
                     </div>
                 </div>
             </div>
-            <div>
+            <div class="comment-list-box">
+                <div class="m-3">
+                    <button class="sortType-btn me-1 btn btn-outline-dark active" value="goodPoint">BEST댓글</button>
+                    <button class="sortType-btn btn btn-outline-dark" value="createdDate">전체댓글</button>
+                </div>
+
                 <ul class="m-0 p-0 comment-list">
-                    <li class="m-3 border-bottom" th:each="comment : ${commentList}" th:data-comment-id="${comment.commentId}">
+                    <li class="m-3 border-bottom" th:each="comment : ${commentList}"
+                        th:data-comment-id="${comment.commentId}">
                         <div class="fw-bolder m-1 mb-2" th:text="${comment.userName}"></div>
                         <div class="m-1" id="commented" th:text="${comment.comment}"></div>
-<!--                        <div class="m-1">-->
-<!--                            <div class="text-black-50 fs-6" th:text="${comment.createdDate}"></div>-->
-<!--                        </div>-->
                         <div class="m-1 d-flex justify-content-between w-100">
                             <div class="m-0 text-black-50 fs-6" th:text="${comment.createdDate}"></div>
                             <div class="row m-0">
@@ -64,14 +67,18 @@
                         </div>
                     </li>
                 </ul>
+                <div class="d-flex justify-content-center">
+                    <button class="btn comment-more" th:if="${commentSliceDto.hasNext}">더보기</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script th:inline="javascript">
         $(document).ready(function () {
+            var pageNumber = 0;
 
-            $('.reaction-button').click(function (){
+            $('.comment-list').on('click', '.reaction-button', function () {
                 var commentId = $(this).closest('li').data('commentId')
                 var reactionPoint = $(this).val();
                 var $this = $(this)
@@ -87,17 +94,17 @@
                         reactionPoint: reactionPoint
                     },
                     success: function () {
-                        if(activeCheck === 0){
+                        if (activeCheck === 0) {
                             $this.addClass('active');
                             $badge.text(badgeVal + 1)
-                        }else {
+                        } else {
                             $this.removeClass('active');
                             $badge.text(badgeVal - 1)
                         }
                     },
                     error: function (err) {
-                        if(err.responseJSON){
-                        alert(err.responseJSON.message);
+                        if (err.responseJSON) {
+                            alert(err.responseJSON.message);
                         }
                     }
 
@@ -121,12 +128,81 @@
                         // 댓글 추가 성공 시
                         // $('#commentsContainer').append('<div>' + response.comment + '</div>'); // 새 댓글을 댓글 컨테이너에 추가
                         $('#comment-text').val(''); // 텍스트에리어 비우기
+                        $('.sortType-btn[value="createdDate"]').click();
                     },
                     error: function () {
                         alert('댓글 추가에 실패했습니다.');
                     }
                 })
             })
+
+            function loadComments(){
+                var sortType = $('.sortType-btn.active').val() || 'createdDate';
+                var chapterId = [[${chapterInfo.chapterId}]];
+                console.log(sortType);
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/comment/view',
+                    data: ({
+                        chapterId: chapterId,
+                        sortType: sortType,
+                        number: pageNumber
+                    }),
+                    success: function (response) {
+                        var commentList = response.commentList;
+                        var commentSliceDto = response.commentSliceDto;
+
+
+                        console.log(commentList)
+                        commentList.forEach(function (comment) {  // 새로운 댓글로 채움
+                            var activeClass = comment.loggedReaction === 1 ? 'active' : '';
+                            var activeBadClass = comment.loggedReaction === -1 ? 'active' : '';
+                            var newCommentHtml = '<li class="m-3 border-bottom" data-comment-id="' + comment.commentId + '">' +
+                                '<div class="fw-bolder m-1 mb-2">' + comment.userName + '</div>' +
+                                '<div class="m-1" id="commented">' + comment.comment + '</div>' +
+                                '<div class="m-1 d-flex justify-content-between w-100">' +
+                                    '<div class="m-0 text-black-50 fs-6">' + comment.createdDate +'</div>' +
+                                    '<div class="row m-0">' +
+                                        '<button class="btn btn-outline-primary reaction-button col btn-close-white border m-1 ' + activeClass +
+                                             '" value="1">' +
+                                        '<img src="/IMG/free-icon-thumbs-up-12709173.png" style="height: 20px">' +
+                                        '<span class="badge bg-white text-black">' + comment.goodPoint + '</span>' +
+                                        '</button>' +
+                                        '<button class="btn btn-outline-danger reaction-button col btn-close-white border m-1 ' + activeBadClass +
+                                        '" value="-1">' +
+                                        '<img src="/IMG/free-icon-thumbs-down-14507870.png" style="height: 20px">' +
+                                        '<span class="badge bg-white text-black">' + comment.badPoint + '</span>' +
+                                        '</button>' +
+                                    '</div>' +
+                                '</div>' +
+                                '</li>';
+                            $('.comment-list').append(newCommentHtml);  // DOM에 새 댓글 추가
+                        });
+                        if (commentSliceDto.hasNext) {
+                            $('.comment-more').show();
+                        } else {
+                            $('.comment-more').hide();
+                        }
+                    }
+                })
+            }
+
+            $('.comment-more').click(function () {
+                pageNumber++; // 페이지 번호 증가
+                loadComments(); // 댓글 로드
+            });
+
+            $('.comment-list-box').on('click', '.sortType-btn', function () {
+
+                console.log('자 나는 누른다.?')
+                $('.comment-list').empty();  // 댓글 리스트를 비우고
+                $('.sortType-btn').removeClass('active'); // 모든 정렬 버튼의 active 클래스 제거
+                $(this).addClass('active'); // 현재 클릭된 버튼에만 active 클래스 추가
+                pageNumber = 0; // 페이지 번호 초기화
+                loadComments(); // 댓글 로드
+            });
+
         })
     </script>
 

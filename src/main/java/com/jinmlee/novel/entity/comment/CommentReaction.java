@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 @Table(
-        name = "comment_likes",
+        name = "comment_reaction",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"comment_id", "member_id"})
         }
@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class CommentReaction {
 
     @Id @GeneratedValue
-    @Column(name = "commentLike_id")
+    @Column(name = "comment_reaction_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,5 +32,5 @@ public class CommentReaction {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private int reactionPoint;
+    private Integer reactionPoint;
 }

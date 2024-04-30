@@ -2,10 +2,14 @@ package com.jinmlee.novel.controller;
 
 import com.jinmlee.novel.dto.auth.CustomUserDetails;
 import com.jinmlee.novel.dto.book.chapter.ChapterMakeDto;
+import com.jinmlee.novel.dto.comment.CommentSliceDto;
 import com.jinmlee.novel.service.book.ChapterService;
 import com.jinmlee.novel.service.book.BookService;
 import com.jinmlee.novel.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -68,9 +72,11 @@ public class ChapterController {
     public String viewChapter(@PathVariable(name = "chapterId") Long chapterId,
                               Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails){
 
+        CommentSliceDto commentSliceDto = new CommentSliceDto();
         model.addAttribute("chapterInfo", chapterService.getChapterInfo(chapterId));
         model.addAttribute("loggedNickname",  customUserDetails.getMember().getNickname());
-        model.addAttribute("commentList", commentService.getCommentList(chapterId, customUserDetails.getMember().getId()));
+        model.addAttribute("commentList", commentService.getCommentList(chapterId, customUserDetails.getMember().getId(), commentSliceDto));
+        model.addAttribute("commentSliceDto", commentSliceDto);
 
         return "chapter/view";
     }
