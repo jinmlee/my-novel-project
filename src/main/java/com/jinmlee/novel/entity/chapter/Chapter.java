@@ -1,6 +1,7 @@
-package com.jinmlee.novel.entity.Book;
+package com.jinmlee.novel.entity.chapter;
 
 import com.jinmlee.novel.dto.book.chapter.ChapterMakeDto;
+import com.jinmlee.novel.entity.Book.Book;
 import com.jinmlee.novel.entity.base.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -26,11 +27,11 @@ public class Chapter extends BaseTimeEntity {
 
     private String title;
 
+    private Long hits;
+
     @Lob
     @Size(min = 0, max = 50000)
     private String content;
-
-    private long hits;
 
     public void modify(ChapterMakeDto chapterMakeDto){
         this.title = chapterMakeDto.getTitle();

@@ -1,6 +1,6 @@
 package com.jinmlee.novel.entity.comment;
 
-import com.jinmlee.novel.entity.Book.Chapter;
+import com.jinmlee.novel.entity.chapter.Chapter;
 import com.jinmlee.novel.entity.Member;
 import com.jinmlee.novel.entity.base.BaseTimeEntity;
 import jakarta.persistence.*;

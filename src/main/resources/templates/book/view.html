@@ -10,7 +10,8 @@
     <div class="mb-5 border-bottom border-success" th:object="${bookInfo}">
         <div class="info-group row mt-5 mb-5">
             <div class="col-auto">
-                <img th:src="${bookInfo.bookImg != null} ? @{'/upload/' + ${bookInfo.bookImg}} : @{'/IMG/base_book_img.png'}" style="border-radius: 10px;width: 200px;height: 250px;">
+                <img th:src="${bookInfo.bookImg != null} ? @{'/upload/' + ${bookInfo.bookImg}} : @{'/IMG/base_book_img.png'}"
+                     style="border-radius: 10px;width: 200px;height: 250px;">
             </div>
             <div class="col-8 d-flex align-items-start flex-column bd-highlight mb-3">
                 <div class="title mb-auto p-2 bd-highlight">
@@ -20,7 +21,9 @@
                     <div class="text-break" th:text="${bookInfo.getBookIntro()}"></div>
                 </div>
                 <div class="ap-2 bd-highlight">
-                    <a><div class="btn btn-outline-success col m-2">첫회보기</div></a>
+                    <a>
+                        <div class="btn btn-outline-success col m-2">첫회보기</div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -28,7 +31,13 @@
     <div class="chapterList">
         <ul>
             <li class="m-3" th:each="chapter : ${chapterList}">
-                <a th:href="@{/chapter/view/{chapterId}(chapterId = ${chapter.id})}"><div class="h5" th:text="${chapter.title}"></div></a>
+                <a th:href="@{/chapter/view/{chapterId}(chapterId = ${chapter.id})}">
+                    <div class="h5" th:text="${chapter.title}"></div>
+                    <div class="row text-black-50">
+                        <div class="col-auto" th:text="조회 +' '+ ${chapter.hits}"></div>
+                        <div class="col"  th:text="${chapter.getTime()}"></div>
+                    </div>
+                </a>
             </li>
         </ul>
     </div>

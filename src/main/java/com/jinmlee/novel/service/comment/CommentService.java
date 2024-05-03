@@ -2,7 +2,7 @@ package com.jinmlee.novel.service.comment;
 
 import com.jinmlee.novel.dto.comment.CommentDto;
 import com.jinmlee.novel.dto.comment.CommentSliceDto;
-import com.jinmlee.novel.entity.Book.Chapter;
+import com.jinmlee.novel.entity.chapter.Chapter;
 import com.jinmlee.novel.entity.Member;
 import com.jinmlee.novel.entity.comment.ChapterComment;
 import com.jinmlee.novel.entity.comment.CommentReaction;
@@ -16,8 +16,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

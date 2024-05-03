@@ -1,8 +1,7 @@
 package com.jinmlee.novel.dto.book.chapter;
 
 import com.jinmlee.novel.entity.Book.Book;
-import com.jinmlee.novel.entity.Book.Chapter;
-import com.jinmlee.novel.entity.Member;
+import com.jinmlee.novel.entity.chapter.Chapter;
 import lombok.*;
 
 @Getter @Setter

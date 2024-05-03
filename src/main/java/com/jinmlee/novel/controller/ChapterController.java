@@ -3,6 +3,7 @@ package com.jinmlee.novel.controller;
 import com.jinmlee.novel.dto.auth.CustomUserDetails;
 import com.jinmlee.novel.dto.book.chapter.ChapterMakeDto;
 import com.jinmlee.novel.dto.comment.CommentSliceDto;
+import com.jinmlee.novel.service.Member.MemberService;
 import com.jinmlee.novel.service.book.ChapterService;
 import com.jinmlee.novel.service.book.BookService;
 import com.jinmlee.novel.service.comment.CommentService;
@@ -23,6 +24,7 @@ public class ChapterController {
     private final ChapterService chapterService;
     private final BookService bookService;
     private final CommentService commentService;
+    private final MemberService memberService;
 
     @GetMapping("/make/{bookId}")
     public String make(@PathVariable(name = "bookId") Long bookId,
@@ -73,7 +75,8 @@ public class ChapterController {
                               Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails){
 
         CommentSliceDto commentSliceDto = new CommentSliceDto();
-        model.addAttribute("chapterInfo", chapterService.getChapterInfo(chapterId));
+        memberService.updateMyChapterView(customUserDetails.getMember(), chapterId);
+        model.addAttribute("chapterInfo", chapterService.getChapterInfo(chapterId, customUserDetails.getMember().getId()));
         model.addAttribute("loggedNickname",  customUserDetails.getMember().getNickname());
         model.addAttribute("commentList", commentService.getCommentList(chapterId, customUserDetails.getMember().getId(), commentSliceDto));
         model.addAttribute("commentSliceDto", commentSliceDto);

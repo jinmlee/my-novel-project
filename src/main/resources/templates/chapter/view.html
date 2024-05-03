@@ -12,14 +12,23 @@
             <div class="border-bottom m-5 mt-5">
                 <div class="h3 fw-bolder m-5" th:text="${chapterInfo.bookName}"></div>
             </div>
+            <div>조회수</div>
+            <div th:text="${chapterInfo.hits}"></div>
             <div class="d-flex justify-content-center">
                 <div class="d-flex flex-column bd-highlight" style="width: 800px">
                     <div class="border-bottom ">
-                        <div class="h4 m-3" th:text="${chapterInfo.title}"></div>
+                        <div class="h4 m-3 bd-highlight" th:text="${chapterInfo.title}"></div>
                     </div>
                     <div class="m-3 mt-5">
                         <div class="fw-bolder" th:utext="${#strings.replace(chapterInfo.content, '\n', '<br/>')}"></div>
                     </div>
+                </div>
+
+            </div>
+            <div class="d-flex justify-content-center">
+                <div>
+                    <img th:src="@{/IMG/like-logo-empty.png}" style="width: 30px"></img>
+                    <div>좋아요</div>
                 </div>
             </div>
         </div>
@@ -55,12 +64,12 @@
                             <div class="row m-0">
                                 <button class="btn-outline-primary reaction-button col btn btn-close-white border m-1"
                                         th:classappend="${comment.loggedReaction == 1} ? 'active'" th:value="1">
-                                    <img th:src="@{/IMG/free-icon-thumbs-up-12709173.png}" style="height: 20px">
+                                    <img th:src="@{/IMG/free-icon-thumbs-up-12709173.png}" style="height: 20px; width: 20px;">
                                     <span class="badge bg-white text-black" th:text="${comment.goodPoint}"></span>
                                 </button>
                                 <button class="btn-outline-danger reaction-button col btn btn-close-white border m-1"
                                         th:classappend="${comment.loggedReaction == -1} ? 'active'" th:value="-1">
-                                    <img th:src="@{/IMG/free-icon-thumbs-down-14507870.png}" style="height: 20px">
+                                    <img th:src="@{/IMG/free-icon-thumbs-down-14507870.png}" style="height: 20px; width: 20px">
                                     <span class="badge bg-white text-black" th:text="${comment.badPoint}"></span>
                                 </button>
                             </div>
