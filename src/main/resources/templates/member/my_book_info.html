@@ -11,7 +11,8 @@
     <div class="mb-5 border-bottom border-success" th:object="${myBookInfo}">
         <div class="info-group row mt-5 mb-5">
             <div class="col-auto">
-                <img th:src="${myBookInfo.bookImg != null} ? @{'/upload/' + ${myBookInfo.bookImg}} : @{'/IMG/base_book_img.png'}" style="border-radius: 10px;width: 200px;height: 250px;">
+                <img th:src="${myBookInfo.bookImg != null} ? @{'/upload/' + ${myBookInfo.bookImg}} : @{'/IMG/base_book_img.png'}"
+                     style="border-radius: 10px;width: 200px;height: 250px;">
             </div>
             <div class="col-8 d-flex align-items-start flex-column bd-highlight mb-3">
                 <div class="title mb-auto p-2 bd-highlight">
@@ -21,20 +22,100 @@
                     <div class="text-break" th:text="${myBookInfo.getBookIntro()}"></div>
                 </div>
                 <div class="ap-2 bd-highlight">
-                    <a th:href="@{/book/modify/{bookId}(bookId = ${myBookInfo.bookId})}"><div class="btn btn-outline-dark col m-2">작품 정보 수정</div></a>
-                    <a th:href="@{/chapter/make/{bookId}(bookId = ${myBookInfo.bookId})}"><div class="btn btn-outline-dark col m-2">회차/공지 쓰기</div></a>
+                    <a th:href="@{/book/modify/{bookId}(bookId = ${myBookInfo.bookId})}">
+                        <div class="btn btn-outline-dark col m-2">작품 정보 수정</div>
+                    </a>
+                    <a th:href="@{/chapter/make/{bookId}(bookId = ${myBookInfo.bookId})}">
+                        <div class="btn btn-outline-dark col m-2">회차/공지 쓰기</div>
+                    </a>
                 </div>
             </div>
         </div>
-        <div class="chapterList">
-            <ul>
-                <li class="m-3" th:each="chapter : ${chapterList}">
-                    <a><div class="h5" th:text="${chapter.title}"></div></a>
-                    <a th:href="@{/chapter/modify/{bookId}/{chapterId}(bookId = ${myBookInfo.bookId}, chapterId = ${chapter.id})}">수정하기</a>
+    </div>
+    <div class="chapterList">
+        <div class="row">
+            <div class="col-auto me-5 fw-bolder h4">작품 회차 <span class="text-black-50"
+                                                                th:text=" '(' + ${#lists.size(chapterList)} + ')'"></span>
+            </div>
+            <div class="col">
+                <div class="btn sortTypeBtn text-black-50 fw-bolder"
+                     th:classappend="${chapterSortType == 'DESC'} ? 'active'" th:value="DESC">최신순
+                </div>
+                <div class="btn sortTypeBtn text-black-50 fw-bolder"
+                     th:classappend="${chapterSortType == 'ASC'} ? 'active'" th:value="ASC">1화부터
+                </div>
+            </div>
+        </div>
+        <ul class="p-0 m-0">
+            <li class="m-3" th:each="chapter : ${chapterList}">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <a class="row" th:href="@{/chapter/view/{chapterId}(chapterId = ${chapter.id})}">
+                            <div class="col-auto">
+                                <img th:src="${myBookInfo.bookImg != null} ? @{'/upload/' + ${myBookInfo.bookImg}} : @{'/IMG/base_book_img.png'}"
+                                     style="border-radius: 10px;width: 80px;height: 120px;">
+                            </div>
+                            <div class="col d-flex align-items-center">
+                                <div class="col">
+                                    <div class="row h5 ms-1" th:text="${chapter.title}"></div>
+                                    <div class="row text-black-50">
+                                        <div class="col-auto" th:text="조회 +' '+ ${chapter.hits}"></div>
+                                        <div class="col" th:text="${chapter.getTime()}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <a th:href="@{/chapter/modify/{bookId}/{chapterId}(bookId = ${myBookInfo.bookId}, chapterId = ${chapter.id})}">수정하기</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+    <div class="d-flex justify-content-center">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${pageDto.pageNum == 1} ? 'disabled'">
+                    <a class="previous-btn page-link"
+                       th:href="@{/member/my_book/{bookId}(bookId=${bookId}, pageNum=${pageDto.getPreviousGroup}, chapterSortType=${chapterSortType})}"
+                       aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(pageDto.startPage, pageDto.endPage)}"
+                    th:classappend="${i == pageDto.pageNum} ? 'active'">
+                    <a class="page-link"
+                       th:href="@{/member/my_book/{bookId}(bookId=${bookId}, pageNum=${i}, chapterSortType=${chapterSortType})}"
+                       th:text="${i}"></a>
+                </li>
+                <li class="page-item" th:classappend="${pageDto.pageNum == pageDto.totalPage} ? 'disabled'">
+                    <a class="next-btn page-link"
+                       th:href="@{/member/my_book/{bookId}(bookId=${bookId}, pageNum=${pageDto.getNextGroup}, chapterSortType=${chapterSortType})}"
+                       aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
                 </li>
             </ul>
-        </div>
+        </nav>
     </div>
+
+    <script th:inline="javascript">
+        $(document).ready(function () {
+
+
+            $('.sortTypeBtn').click(function () {
+                var sortType = $(this).attr('value');
+                var currentUrl = window.location.href;
+                var baseUrl = currentUrl.split('?')[0];
+
+                window.location.href = baseUrl + '?chapterSortType=' + sortType;
+            })
+
+
+        })
+    </script>
 
 </main>
 </body>

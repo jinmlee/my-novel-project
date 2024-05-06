@@ -17,6 +17,7 @@ public class ChapterMakeDto {
                 .title(this.title)
                 .content(this.content)
                 .book(book)
+                .hits(0L)
                 .build();
     }
 }

@@ -4,15 +4,19 @@ import com.jinmlee.novel.dto.auth.CustomUserDetails;
 import com.jinmlee.novel.dto.book.BookInfoDto;
 import com.jinmlee.novel.dto.book.BookLibraryDto;
 import com.jinmlee.novel.dto.book.BookMakeDto;
+import com.jinmlee.novel.dto.book.chapter.ChapterListDto;
+import com.jinmlee.novel.dto.book.chapter.ChapterPageDto;
 import com.jinmlee.novel.enums.AgeRating;
 import com.jinmlee.novel.enums.Genre;
 import com.jinmlee.novel.service.book.BookService;
 import com.jinmlee.novel.service.book.ChapterService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -74,10 +78,13 @@ public class BookController {
     }
 
     @GetMapping("/view/{bookId}")
-    public String viewBook(@PathVariable(name = "bookId") Long bookId, Model model){
+    public String viewBook(@PathVariable(name = "bookId") Long bookId, Model model,
+                           @RequestParam(name = "chapterSortType", defaultValue = "DESC") String chapterSortType,
+                           @RequestParam(name = "pageNum", defaultValue = "1") int pageNum){
 
+        model.addAttribute("chapterSortType", chapterSortType);
         model.addAttribute("bookInfo", bookService.getBookInfo(bookId));
-        model.addAttribute("chapterList", chapterService.getChapterList(bookId));
+        model.addAttribute("chapterList", chapterService.getChapterList(bookId, chapterSortType, pageNum, model));
         return "book/view";
     }
 }

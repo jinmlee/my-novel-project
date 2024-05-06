@@ -4,6 +4,8 @@ import com.jinmlee.novel.dto.book.chapter.ChapterInfoDto;
 import com.jinmlee.novel.dto.book.chapter.ChapterListDto;
 import com.jinmlee.novel.dto.book.chapter.ChapterModifyDto;
 import com.jinmlee.novel.entity.chapter.Chapter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +18,7 @@ public interface ChapterRepository extends JpaRepository<Chapter, Long> {
 
     @Query("select new com.jinmlee.novel.dto.book.chapter.ChapterListDto(c.id, c.title, c.hits, c.createdDate) from Chapter c " +
             "where c.book.id = :bookId")
-    List<ChapterListDto> findChapterList(@Param("bookId") Long bookId);
+    Page<ChapterListDto> findChapterList(@Param("bookId") Long bookId, Pageable pageable);
 
     @Query("select new com.jinmlee.novel.dto.book.chapter.ChapterModifyDto(c.id, c.title, c.content, b.bookName) from Chapter c " +
             "join c.book b " +

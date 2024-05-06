@@ -4,6 +4,7 @@ import com.jinmlee.novel.dto.auth.CustomUserDetails;
 import com.jinmlee.novel.dto.book.BookInfoDto;
 import com.jinmlee.novel.dto.book.MyBookDto;
 import com.jinmlee.novel.dto.book.MyBookSliceDto;
+import com.jinmlee.novel.dto.book.chapter.ChapterPageDto;
 import com.jinmlee.novel.service.Member.MemberService;
 import com.jinmlee.novel.service.book.BookService;
 import com.jinmlee.novel.service.book.ChapterService;
@@ -63,10 +64,13 @@ public class MemberController {
 
     @GetMapping("/my_book/{bookId}")
     public String myBookInfo(@PathVariable(name="bookId") Long bookId, Model model,
-                             @AuthenticationPrincipal CustomUserDetails customUserDetails){
+                             @AuthenticationPrincipal CustomUserDetails customUserDetails,
+                             @RequestParam(name = "chapterSortType", defaultValue = "DESC") String chapterSortType,
+                             @RequestParam(name = "pageNum", defaultValue = "1") int pageNum){
         if(bookService.existsMyBook(bookId, customUserDetails.getMember().getId())){
             model.addAttribute("myBookInfo", bookService.getBookInfo(bookId));
-            model.addAttribute("chapterList", chapterService.getChapterList(bookId));
+            model.addAttribute("chapterList", chapterService.getChapterList(bookId, chapterSortType, pageNum, model));
+            model.addAttribute("chapterSortType", chapterSortType);
         }else {
             throw new IllegalArgumentException("책을 작성한 사람만 접속할 수 있습니다.");
         }

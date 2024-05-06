@@ -1,19 +1,21 @@
 package com.jinmlee.novel.service.book;
 
-import com.jinmlee.novel.dto.book.chapter.ChapterInfoDto;
-import com.jinmlee.novel.dto.book.chapter.ChapterListDto;
-import com.jinmlee.novel.dto.book.chapter.ChapterMakeDto;
-import com.jinmlee.novel.dto.book.chapter.ChapterModifyDto;
+import com.jinmlee.novel.dto.book.chapter.*;
 import com.jinmlee.novel.entity.Book.Book;
 import com.jinmlee.novel.entity.chapter.Chapter;
 import com.jinmlee.novel.repository.BookRepository;
 import com.jinmlee.novel.repository.ChapterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import java.util.*;
 
@@ -33,8 +35,31 @@ public class ChapterService {
         return content.replace("\n", "<br/>");
     }
 
-    public List<ChapterListDto> getChapterList(Long bookId){
-        return chapterRepository.findChapterList(bookId);
+    public List<ChapterListDto> getChapterList(Long bookId, String chapterSortType, int pageNum, Model model){
+
+        ChapterPageDto chapterPageDto = new ChapterPageDto(pageNum);
+
+        System.out.println(chapterPageDto.getPageNum());
+
+        Page<ChapterListDto> chapterList = chapterRepository.findChapterList(bookId, getChapterPageable(chapterSortType, chapterPageDto));
+        if(chapterPageDto.getPageNum() > chapterList.getTotalPages()){
+            chapterPageDto.setPageNum(chapterList.getTotalPages());
+            chapterList = chapterRepository.findChapterList(bookId, getChapterPageable(chapterSortType, chapterPageDto));
+        }
+        chapterPageDto.set(chapterList);
+
+        model.addAttribute("pageDto", chapterPageDto);
+        return chapterList.getContent();
+    }
+
+    private Pageable getChapterPageable(String chapterSortType, ChapterPageDto chapterPageDto){
+
+        if(chapterSortType.equals("DESC")){
+            return PageRequest.of(chapterPageDto.getPageNum() - 1, chapterPageDto.getPageSize(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        } else if (chapterSortType.equals("ASC")) {
+            return PageRequest.of(chapterPageDto.getPageNum() - 1, chapterPageDto.getPageSize(), Sort.by(Sort.Direction.ASC, "createdDate"));
+        }
+        throw new IllegalArgumentException();
     }
 
     public ChapterModifyDto getChapterModifyDto(Long chapterId){
