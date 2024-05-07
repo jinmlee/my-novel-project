@@ -1,11 +1,10 @@
 package com.jinmlee.novel.service.Member;
 
 import com.jinmlee.novel.entity.Member;
-import com.jinmlee.novel.entity.base.BaseTimeEntity;
 import com.jinmlee.novel.entity.chapter.Chapter;
 import com.jinmlee.novel.entity.chapter.ChapterView;
-import com.jinmlee.novel.repository.ChapterRepository;
-import com.jinmlee.novel.repository.ChapterViewRepository;
+import com.jinmlee.novel.repository.Chapter.ChapterRepository;
+import com.jinmlee.novel.repository.Chapter.ChapterViewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

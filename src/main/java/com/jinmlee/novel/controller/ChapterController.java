@@ -16,6 +16,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/chapter")
@@ -72,15 +75,30 @@ public class ChapterController {
 
     @GetMapping("/view/{chapterId}")
     public String viewChapter(@PathVariable(name = "chapterId") Long chapterId,
+                              @RequestParam(name = "bookId") Long bookId,
                               Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails){
 
         CommentSliceDto commentSliceDto = new CommentSliceDto();
         memberService.updateMyChapterView(customUserDetails.getMember(), chapterId);
-        model.addAttribute("chapterInfo", chapterService.getChapterInfo(chapterId, customUserDetails.getMember().getId()));
+        model.addAttribute("isLiked", chapterService.isLiked(chapterId, customUserDetails.getMember().getId()));
+        model.addAttribute("isSubscribed", bookService.isSubscribed(bookId, customUserDetails.getMember().getId()));
+        model.addAttribute("chapterInfo", chapterService.getChapterInfo(chapterId, customUserDetails.getMember()));
         model.addAttribute("loggedNickname",  customUserDetails.getMember().getNickname());
         model.addAttribute("commentList", commentService.getCommentList(chapterId, customUserDetails.getMember().getId(), commentSliceDto));
         model.addAttribute("commentSliceDto", commentSliceDto);
 
         return "chapter/view";
+    }
+
+
+    @PostMapping("/addLike")
+    @ResponseBody
+    public Map<String, Object> addLike(@RequestParam(name = "chapterId") Long chapterId,
+                       @AuthenticationPrincipal CustomUserDetails customUserDetails){
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("isLike", chapterService.reactionLiked(chapterId, customUserDetails.getMember()));
+        return response;
+
     }
 }

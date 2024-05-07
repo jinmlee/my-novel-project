@@ -1,4 +1,4 @@
-package com.jinmlee.novel.repository;
+package com.jinmlee.novel.repository.Chapter;
 
 import com.jinmlee.novel.entity.Member;
 import com.jinmlee.novel.entity.chapter.Chapter;

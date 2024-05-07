@@ -2,6 +2,8 @@ package com.jinmlee.novel.service.book;
 
 
 import com.jinmlee.novel.dto.book.BookInfoDto;
+import com.jinmlee.novel.entity.Book.BookSubscribe;
+import com.jinmlee.novel.repository.Book.BookSubscribeRepository;
 import com.jinmlee.novel.utils.FileStore;
 import com.jinmlee.novel.dto.auth.CustomUserDetails;
 import com.jinmlee.novel.dto.book.BookMakeDto;
@@ -10,7 +12,7 @@ import com.jinmlee.novel.dto.book.MyBookSliceDto;
 import com.jinmlee.novel.entity.Book.Book;
 import com.jinmlee.novel.entity.Member;
 import com.jinmlee.novel.entity.file.FileEntity;
-import com.jinmlee.novel.repository.BookRepository;
+import com.jinmlee.novel.repository.Book.BookRepository;
 import com.jinmlee.novel.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +30,7 @@ import java.util.Optional;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final BookSubscribeRepository bookSubscribeRepository;
     private final FileRepository fileRepository;
     private final FileStore fileStore;
 
@@ -86,5 +89,30 @@ public class BookService {
 
     public String getBookName(Long bookId){
         return bookRepository.findBookName(bookId);
+    }
+
+
+    public boolean isSubscribed(Long bookId, Long memberId){
+        return bookSubscribeRepository.existsByBookIdAndMemberId(bookId, memberId);
+    }
+
+    public boolean reactionSubscribed(Long bookId, Member member){
+        Optional<BookSubscribe> bookSubscribeOpt = bookSubscribeRepository.findByBookIdAndMemberId(bookId, member.getId());
+
+        if(bookSubscribeOpt.isPresent()){
+            bookSubscribeRepository.delete(bookSubscribeOpt.get());
+            return false;
+        }
+        Optional<Book> book = bookRepository.findById(bookId);
+        if(book.isPresent()) {
+
+            BookSubscribe bookSubscribe = BookSubscribe.builder()
+                    .book(book.get())
+                    .member(member)
+                    .build();
+
+            bookSubscribeRepository.save(bookSubscribe);
+        }
+        return true;
     }
 }

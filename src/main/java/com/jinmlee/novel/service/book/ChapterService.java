@@ -2,17 +2,18 @@ package com.jinmlee.novel.service.book;
 
 import com.jinmlee.novel.dto.book.chapter.*;
 import com.jinmlee.novel.entity.Book.Book;
+import com.jinmlee.novel.entity.Member;
 import com.jinmlee.novel.entity.chapter.Chapter;
-import com.jinmlee.novel.repository.BookRepository;
-import com.jinmlee.novel.repository.ChapterRepository;
+import com.jinmlee.novel.entity.chapter.ChapterLike;
+import com.jinmlee.novel.repository.Book.BookRepository;
+import com.jinmlee.novel.repository.Chapter.ChapterLikeRepository;
+import com.jinmlee.novel.repository.Chapter.ChapterRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -24,6 +25,7 @@ import java.util.*;
 public class ChapterService {
     private final ChapterRepository chapterRepository;
     private final BookRepository bookRepository;
+    private final ChapterLikeRepository chapterLikeRepository;
     private final RedisTemplate<String, Object> redisTemplate;
     public void makeChapter(ChapterMakeDto chapterMakeDto, Long bookId){
         Optional<Book> book = bookRepository.findById(bookId);
@@ -75,10 +77,11 @@ public class ChapterService {
         }
     }
 
-    public ChapterInfoDto getChapterInfo(Long chapterId, Long memberId){
+    public ChapterInfoDto getChapterInfo(Long chapterId, Member member){
 
         ChapterInfoDto chapterInfoDto = chapterRepository.findChapterInfo(chapterId);
-        incrementViewCount(chapterId, memberId);
+
+        incrementViewCount(chapterId, member.getId());
 
         return chapterInfoDto;
     }
@@ -110,5 +113,31 @@ public class ChapterService {
         }
 
         redisTemplate.delete(keys);
+    }
+
+    public boolean isLiked(Long chapterId, Long memberId){
+        Optional<ChapterLike> chapterLike = chapterLikeRepository.findByChapterIdAndMemberId(chapterId, memberId);
+        return chapterLike.isPresent();
+    }
+
+    public boolean reactionLiked(Long chapterId, Member member){
+
+        Optional<ChapterLike> chapterLikeOpt = chapterLikeRepository.findByChapterIdAndMemberId(chapterId, member.getId());
+
+        if(chapterLikeOpt.isPresent()){
+
+            ChapterLike chapterLike = chapterLikeOpt.get();
+            chapterLikeRepository.delete(chapterLike);
+            return false;
+        }else {
+            Optional<Chapter> chapterOpt = chapterRepository.findById(chapterId);
+
+            ChapterLike chapterLike = ChapterLike.builder()
+                    .chapter(chapterOpt.get())
+                    .member(member)
+                    .build();
+            chapterLikeRepository.save(chapterLike);
+            return true;
+        }
     }
 }

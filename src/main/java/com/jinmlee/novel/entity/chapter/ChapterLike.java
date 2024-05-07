@@ -3,12 +3,14 @@ package com.jinmlee.novel.entity.chapter;
 import com.jinmlee.novel.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor @AllArgsConstructor
+@Builder
 @Table(
         name = "chapter_like",
         uniqueConstraints = {
@@ -27,6 +29,4 @@ public class ChapterLike {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
-    private boolean reaction;
 }

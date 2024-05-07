@@ -24,7 +24,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -86,5 +88,16 @@ public class BookController {
         model.addAttribute("bookInfo", bookService.getBookInfo(bookId));
         model.addAttribute("chapterList", chapterService.getChapterList(bookId, chapterSortType, pageNum, model));
         return "book/view";
+    }
+
+    @PostMapping("/addSubscribe")
+    @ResponseBody
+    public Map<String, Object> addSubscribeProcess(@RequestParam(name = "bookId") Long bookId,
+                                   @AuthenticationPrincipal CustomUserDetails customUserDetails){
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("isSubscribe", bookService.reactionSubscribed(bookId, customUserDetails.getMember()));
+
+        return response;
     }
 }

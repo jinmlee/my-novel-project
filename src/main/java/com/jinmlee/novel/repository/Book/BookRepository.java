@@ -1,4 +1,4 @@
-package com.jinmlee.novel.repository;
+package com.jinmlee.novel.repository.Book;
 
 import com.jinmlee.novel.dto.book.BookInfoDto;
 import com.jinmlee.novel.dto.book.MyBookDto;

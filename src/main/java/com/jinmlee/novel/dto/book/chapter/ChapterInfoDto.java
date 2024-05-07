@@ -14,4 +14,7 @@ public class ChapterInfoDto {
     private Long bookId;
     private String bookName;
     private Long hits;
+    private Long likes;
+    private Long subscribes;
+
 }

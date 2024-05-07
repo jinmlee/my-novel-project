@@ -8,27 +8,64 @@
 <body>
 <main>
     <div class="container">
-        <div class="chapter-box border" th:object="${chapterInfo}" style="min-height: 1000px">
-            <div class="border-bottom m-5 mt-5">
-                <div class="h3 fw-bolder m-5" th:text="${chapterInfo.bookName}"></div>
-            </div>
-            <div>조회수</div>
-            <div th:text="${chapterInfo.hits}"></div>
-            <div class="d-flex justify-content-center">
-                <div class="d-flex flex-column bd-highlight" style="width: 800px">
-                    <div class="border-bottom ">
-                        <div class="h4 m-3 bd-highlight" th:text="${chapterInfo.title}"></div>
+        <div class="chapter-box border d-flex" th:object="${chapterInfo}" style="min-height: 1000px">
+            <div class="d-flex flex-grow-1 flex-column bd-highlight mb-3">
+                <div class="mb-auto p-2 bd-highlight">
+                    <div class="border-bottom m-5 mt-5">
+                        <div class="h3 fw-bolder m-5" th:text="${chapterInfo.bookName}"></div>
                     </div>
-                    <div class="m-3 mt-5">
-                        <div class="fw-bolder" th:utext="${#strings.replace(chapterInfo.content, '\n', '<br/>')}"></div>
+                    <div class="d-flex justify-content-center">
+                        <div class="d-flex flex-column bd-highlight" style="width: 800px">
+                            <div class="border-bottom ">
+                                <div class="h4 m-3 bd-highlight" th:text="${chapterInfo.title}"></div>
+                            </div>
+                            <div class="m-3 mt-5">
+                                <div class="fw-bolder"
+                                     th:utext="${#strings.replace(chapterInfo.content, '\n', '<br/>')}"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div class="mt-auto p-2 bd-highlight">
+                    <div class="d-flex justify-content-center">
+                        <div class="like-btn  border d-flex justify-content-center" type="button"
+                             th:data-chapter-id="${chapterInfo.chapterId}" style="height: 100px; width: 100px">
+                            <div class="d-flex flex-column bd-highlight justify-content-center">
+                                <div class="d-flex justify-content-center">
+                                    <img class=""
+                                         th:src="${isLiked} ? @{/IMG/like-logo.png} : @{/IMG/like-logo-empty.png}"
+                                         style="width: 30px; height: 30px">
+                                </div>
+                                <div class="bd-highlight">좋아요</div>
+                                <div class="like-cnt bd-highlight text-black-50 text-center"
+                                     th:text="${chapterInfo.likes}"></div>
+                            </div>
+                        </div>
+                        <div class="subscribe-btn border d-flex justify-content-center" type="button"
+                             th:data-book-id="${chapterInfo.bookId}" style="height: 100px; width: 100px">
+                            <div class="d-flex flex-column bd-highlight justify-content-center">
+                                <div class="d-flex justify-content-center">
+                                    <img class=""
+                                         th:src="${isSubscribed} ? @{/IMG/subscribe-icon-check.png} : @{/IMG/subscribe-icon-none.png}"
+                                         style="width: 30px; height: 30px">
+                                </div>
+                                <div class="bd-highlight">구독</div>
+                                <div class="subscribe-cnt bd-highlight text-black-50 text-center"
+                                     th:text="${chapterInfo.subscribes}"></div>
+                            </div>
+                        </div>
+                        <div class="border d-flex justify-content-center" style="height: 100px; width: 100px">
+                            <div class="d-flex flex-column bd-highlight justify-content-center">
+                                <div class="d-flex justify-content-center">
+                                    <img class="" th:src="@{/IMG/view-icon.png}" style="width: 30px; height: 30px">
+                                </div>
+                                <div class="bd-highlight">조회수</div>
+                                <div class="bd-highlight text-black-50 text-center" th:text="${chapterInfo.hits}"></div>
+                            </div>
+                        </div>
+                    </div>
 
-            </div>
-            <div class="d-flex justify-content-center">
-                <div>
-                    <img th:src="@{/IMG/like-logo-empty.png}" style="width: 30px"></img>
-                    <div>좋아요</div>
+
                 </div>
             </div>
         </div>
@@ -60,16 +97,18 @@
                         <div class="fw-bolder m-1 mb-2" th:text="${comment.userName}"></div>
                         <div class="m-1" id="commented" th:text="${comment.comment}"></div>
                         <div class="m-1 d-flex justify-content-between w-100">
-                            <div class="m-0 text-black-50 fs-6" th:text="${comment.createdDate}"></div>
+                            <div class="m-0 text-black-50 fs-6" th:text="${comment.getTime()}"></div>
                             <div class="row m-0">
                                 <button class="btn-outline-primary reaction-button col btn btn-close-white border m-1"
                                         th:classappend="${comment.loggedReaction == 1} ? 'active'" th:value="1">
-                                    <img th:src="@{/IMG/free-icon-thumbs-up-12709173.png}" style="height: 20px; width: 20px;">
+                                    <img th:src="@{/IMG/free-icon-thumbs-up-12709173.png}"
+                                         style="height: 20px; width: 20px;">
                                     <span class="badge bg-white text-black" th:text="${comment.goodPoint}"></span>
                                 </button>
                                 <button class="btn-outline-danger reaction-button col btn btn-close-white border m-1"
                                         th:classappend="${comment.loggedReaction == -1} ? 'active'" th:value="-1">
-                                    <img th:src="@{/IMG/free-icon-thumbs-down-14507870.png}" style="height: 20px; width: 20px">
+                                    <img th:src="@{/IMG/free-icon-thumbs-down-14507870.png}"
+                                         style="height: 20px; width: 20px">
                                     <span class="badge bg-white text-black" th:text="${comment.badPoint}"></span>
                                 </button>
                             </div>
@@ -86,6 +125,66 @@
     <script th:inline="javascript">
         $(document).ready(function () {
             var pageNumber = 0;
+
+
+            $('.like-btn').click(function () {
+                var chapterId = $(this).data('chapter-id'); // 데이터 속성에서 챕터 ID를 가져옵니다.
+                var $this = $(this);
+                var $likeCnt = $this.find('.like-cnt');
+                var currentLikes = parseInt($likeCnt.text(), 10);
+
+                $.ajax({
+                    url: '/chapter/addLike',
+                    method: 'POST',
+                    data: {
+                        chapterId: chapterId
+                    },
+                    success: function (response) {
+                        var isLike = response.isLike
+                        var newLikeCnt = isLike ? currentLikes + 1 : currentLikes -1;
+                        var newSrc = isLike ? '/IMG/like-logo.png' : '/IMG/like-logo-empty.png';
+                        $this.find('img').attr('src', newSrc);
+                        $likeCnt.text(newLikeCnt);
+                    },
+                    error: function (error) {
+                        alert('좋아요 상태 변경 중 오류 발생');
+                        console.error('Error:', error);
+                    }
+                });
+            });
+
+            $('.subscribe-btn').click(function (){
+
+                var bookId = $(this).data('book-id');
+                var $this = $(this);
+                var $subscribeCnt = $this.find('.subscribe-cnt')
+                var currentSubscribe = parseInt($subscribeCnt.text(),10);
+
+                $.ajax({
+                    url: '/book/addSubscribe',
+                    method: 'POST',
+                    data:{
+                        bookId: bookId
+                    },
+
+                    success: function (response){
+                        var isSubscribe = response.isSubscribe;
+                        var newSrc = isSubscribe ? '/IMG/subscribe-icon-check.png' : '/IMG/subscribe-icon-none.png'
+                        var newSubscribeCnt = isSubscribe ? currentSubscribe + 1 : currentSubscribe - 1;
+
+                        $this.find('img').attr('src', newSrc);
+                        $subscribeCnt.text(newSubscribeCnt);
+                    },
+                    error: function (error){
+                        alert('구독 상태 변경 중 오류 발생');
+                        console.error('Error:', error);
+                    }
+
+                })
+
+
+            })
+
 
             $('.comment-list').on('click', '.reaction-button', function () {
                 var commentId = $(this).closest('li').data('commentId')
@@ -145,7 +244,7 @@
                 })
             })
 
-            function loadComments(){
+            function loadComments() {
                 var sortType = $('.sortType-btn.active').val() || 'createdDate';
                 var chapterId = [[${chapterInfo.chapterId}]];
                 console.log(sortType);
@@ -165,25 +264,31 @@
 
                         console.log(commentList)
                         commentList.forEach(function (comment) {  // 새로운 댓글로 채움
+                            var date = new Date(comment.createdDate);
+                            var formattedDate = [
+                                date.getFullYear(),
+                                ('0' + (date.getMonth() + 1)).slice(-2),
+                                ('0' + date.getDate()).slice(-2)
+                            ].join('.');
                             var activeClass = comment.loggedReaction === 1 ? 'active' : '';
                             var activeBadClass = comment.loggedReaction === -1 ? 'active' : '';
                             var newCommentHtml = '<li class="m-3 border-bottom" data-comment-id="' + comment.commentId + '">' +
                                 '<div class="fw-bolder m-1 mb-2">' + comment.userName + '</div>' +
                                 '<div class="m-1" id="commented">' + comment.comment + '</div>' +
                                 '<div class="m-1 d-flex justify-content-between w-100">' +
-                                    '<div class="m-0 text-black-50 fs-6">' + comment.createdDate +'</div>' +
-                                    '<div class="row m-0">' +
-                                        '<button class="btn btn-outline-primary reaction-button col btn-close-white border m-1 ' + activeClass +
-                                             '" value="1">' +
-                                        '<img src="/IMG/free-icon-thumbs-up-12709173.png" style="height: 20px">' +
-                                        '<span class="badge bg-white text-black">' + comment.goodPoint + '</span>' +
-                                        '</button>' +
-                                        '<button class="btn btn-outline-danger reaction-button col btn-close-white border m-1 ' + activeBadClass +
-                                        '" value="-1">' +
-                                        '<img src="/IMG/free-icon-thumbs-down-14507870.png" style="height: 20px">' +
-                                        '<span class="badge bg-white text-black">' + comment.badPoint + '</span>' +
-                                        '</button>' +
-                                    '</div>' +
+                                '<div class="m-0 text-black-50 fs-6">' + formattedDate + '</div>' +
+                                '<div class="row m-0">' +
+                                '<button class="btn btn-outline-primary reaction-button col btn-close-white border m-1 ' + activeClass +
+                                '" value="1">' +
+                                '<img src="/IMG/free-icon-thumbs-up-12709173.png" style="height: 20px">' +
+                                '<span class="badge bg-white text-black">' + comment.goodPoint + '</span>' +
+                                '</button>' +
+                                '<button class="btn btn-outline-danger reaction-button col btn-close-white border m-1 ' + activeBadClass +
+                                '" value="-1">' +
+                                '<img src="/IMG/free-icon-thumbs-down-14507870.png" style="height: 20px">' +
+                                '<span class="badge bg-white text-black">' + comment.badPoint + '</span>' +
+                                '</button>' +
+                                '</div>' +
                                 '</div>' +
                                 '</li>';
                             $('.comment-list').append(newCommentHtml);  // DOM에 새 댓글 추가

@@ -1,4 +1,4 @@
-package com.jinmlee.novel.repository;
+package com.jinmlee.novel.repository.Chapter;
 
 import com.jinmlee.novel.dto.book.chapter.ChapterInfoDto;
 import com.jinmlee.novel.dto.book.chapter.ChapterListDto;
@@ -25,8 +25,10 @@ public interface ChapterRepository extends JpaRepository<Chapter, Long> {
             "where c.id = :chapterId")
     ChapterModifyDto findChapterModifyInfo(@Param("chapterId") Long chapterId);
 
-    @Query("select new com.jinmlee.novel.dto.book.chapter.ChapterInfoDto(c.id, c.title, c.content, b.id, b.bookName, c.hits) from Chapter c " +
+    @Query("select new com.jinmlee.novel.dto.book.chapter.ChapterInfoDto(c.id, c.title, c.content, b.id, b.bookName, c.hits, count (cl), count (bs)) from Chapter c " +
             "join c.book b " +
+            "left join ChapterLike cl on cl.chapter = c " +
+            "left join BookSubscribe bs on bs.book = b " +
             "where c.id = :chapterId")
     ChapterInfoDto findChapterInfo(@Param("chapterId") Long chapterId);
 

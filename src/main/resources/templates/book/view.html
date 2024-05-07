@@ -40,10 +40,9 @@
         </div>
         <ul class="p-0 m-0">
             <li class="m-3" th:each="chapter : ${chapterList}">
-                <a class="row" th:href="@{/chapter/view/{chapterId}(chapterId = ${chapter.id})}">
+                <a class="row" th:href="@{/chapter/view/{chapterId}(chapterId = ${chapter.id}, bookId = ${bookId})}">
                     <div class="col-auto">
-                        <img th:src="${bookInfo.bookImg != null} ? @{'/upload/' + ${bookInfo.bookImg}} : @{'/IMG/base_book_img.png'}"
-                             style="border-radius: 10px;width: 80px;height: 120px;">
+                        <img class="book-mini-img" th:src="${bookInfo.bookImg != null} ? @{'/upload/' + ${bookInfo.bookImg}} : @{'/IMG/base_book_img.png'}">
                     </div>
                     <div class="col d-flex align-items-center">
                         <div class="col">
