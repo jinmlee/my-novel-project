@@ -1,24 +1,19 @@
 package com.jinmlee.novel.service.book;
 
 
-import com.jinmlee.novel.dto.book.BookInfoDto;
+import com.jinmlee.novel.dto.book.*;
 import com.jinmlee.novel.entity.Book.BookSubscribe;
+import com.jinmlee.novel.enums.Genre;
 import com.jinmlee.novel.repository.Book.BookSubscribeRepository;
 import com.jinmlee.novel.utils.FileStore;
 import com.jinmlee.novel.dto.auth.CustomUserDetails;
-import com.jinmlee.novel.dto.book.BookMakeDto;
-import com.jinmlee.novel.dto.book.MyBookDto;
-import com.jinmlee.novel.dto.book.MyBookSliceDto;
 import com.jinmlee.novel.entity.Book.Book;
 import com.jinmlee.novel.entity.Member;
 import com.jinmlee.novel.entity.file.FileEntity;
 import com.jinmlee.novel.repository.Book.BookRepository;
 import com.jinmlee.novel.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -97,6 +92,7 @@ public class BookService {
     }
 
     public boolean reactionSubscribed(Long bookId, Member member){
+
         Optional<BookSubscribe> bookSubscribeOpt = bookSubscribeRepository.findByBookIdAndMemberId(bookId, member.getId());
 
         if(bookSubscribeOpt.isPresent()){
@@ -114,5 +110,23 @@ public class BookService {
             bookSubscribeRepository.save(bookSubscribe);
         }
         return true;
+    }
+
+    public List<BookIndexDto> getRankingList(){
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "rankingScore"));
+
+        Page<Object[]> rankingList = bookRepository.findRankingList(pageable);
+        List<BookIndexDto> test = rankingList.stream().map(result -> new BookIndexDto(
+                        (Long) result[0], //bookId
+                        (String) result[1], //bookName
+                        (String) result[2], // author
+                        (Genre) result[3], // genre
+                        (String) result[4], // bookImg
+                        (Long) result[5] // subscribesCnt
+                ))
+                .toList();
+
+        return test;
     }
 }

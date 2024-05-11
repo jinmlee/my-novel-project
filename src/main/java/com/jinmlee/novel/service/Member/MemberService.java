@@ -1,13 +1,22 @@
 package com.jinmlee.novel.service.Member;
 
+import com.jinmlee.novel.dto.member.MySubscribeDto;
+import com.jinmlee.novel.dto.member.MyViewDto;
 import com.jinmlee.novel.entity.Member;
 import com.jinmlee.novel.entity.chapter.Chapter;
 import com.jinmlee.novel.entity.chapter.ChapterView;
+import com.jinmlee.novel.repository.Book.BookSubscribeRepository;
 import com.jinmlee.novel.repository.Chapter.ChapterRepository;
 import com.jinmlee.novel.repository.Chapter.ChapterViewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,7 +25,9 @@ public class MemberService {
 
     private final ChapterViewRepository chapterViewRepository;
     private final ChapterRepository chapterRepository;
+    private final BookSubscribeRepository bookSubscribeRepository;
 
+    @Transactional
     public void updateMyChapterView(Member member, Long chapterId){
 
         Optional<Chapter> chapterOp = chapterRepository.findById(chapterId);
@@ -35,5 +46,20 @@ public class MemberService {
         }else {
             throw new IllegalArgumentException();
         }
+    }
+
+    public Slice<MyViewDto> getMyViewList(Member member, int pageNum){
+        Pageable pageable = PageRequest.of(pageNum, 10, Sort.by(Sort.Direction.DESC, "lastModifiedDate"));
+        return chapterViewRepository.findMyViewList(member, pageable);
+    }
+
+    @Transactional
+    public void removeMyView(Long bookId, Member member){
+        chapterViewRepository.deleteChapterViewByMemberAndBookId(member, bookId);
+    }
+
+    public Slice<MySubscribeDto> getMySubscribeList(Member member, int pageNum){
+        Pageable pageable = PageRequest.of(pageNum, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
+        return bookSubscribeRepository.findMySubscribeList(member, pageable);
     }
 }

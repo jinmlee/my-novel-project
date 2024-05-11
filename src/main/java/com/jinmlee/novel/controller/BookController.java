@@ -2,30 +2,18 @@ package com.jinmlee.novel.controller;
 
 import com.jinmlee.novel.dto.auth.CustomUserDetails;
 import com.jinmlee.novel.dto.book.BookInfoDto;
-import com.jinmlee.novel.dto.book.BookLibraryDto;
 import com.jinmlee.novel.dto.book.BookMakeDto;
-import com.jinmlee.novel.dto.book.chapter.ChapterListDto;
-import com.jinmlee.novel.dto.book.chapter.ChapterPageDto;
-import com.jinmlee.novel.enums.AgeRating;
 import com.jinmlee.novel.enums.Genre;
 import com.jinmlee.novel.service.book.BookService;
 import com.jinmlee.novel.service.book.ChapterService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Controller

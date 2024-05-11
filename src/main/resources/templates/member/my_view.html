@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="layout/layout :: layout (~{::title}, ~{::main})"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>최근 본 작품</title>
+</head>
+<body>
+<main>
+    <div th:insert="~{fragment/my_info_nav :: my_info_nav}"></div>
+    <div>
+        <ul class="my-view-list">
+            <li class="border-bottom book-card" th:each="myView : ${myViewList}" th:data-book-id="${myView.bookId}">
+                <div class="row m-3">
+                    <div class="col-auto">
+                        <img class="book-mini-img"
+                             th:src="${myView.bookImg != null} ? @{'/upload/' + ${myView.bookImg}} : @{'/IMG/base_book_img.png'}">
+                    </div>
+                    <div class="col d-flex justify-content-between">
+                        <div class=" d-flex align-items-center">
+                            <div>
+                                <div>
+                                    <div class="fw-bolder fs-4" th:text="${myView.bookName}"></div>
+                                    <div class="text-black-50">
+                                        <span>최근 본 회차 :</span>
+                                        <span th:text="${myView.chapterTitle}"></span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <button class="btn btn-outline-dark me-2" type="button"><a
+                                            th:href="@{/chapter/view/{chapterId}(chapterId = ${myView.chapterId}, bookId = ${myView.bookId})}">이어보기</a>
+                                    </button>
+                                    <button class="btn btn-outline-dark" type="button"><a
+                                            th:href="@{/book/view/{bookId}(bookId = ${myView.bookId})}">회차 더보기</a>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <a class="remove-btn" type="button"><img src="/IMG/remove-img.png" alt="" style="width: 40px; height: 40px"></a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="d-flex justify-content-center">
+            <button class="btn book-more" th:if="${myViewList.hasNext()}">더보기</button>
+        </div>
+    </div>
+
+
+    <script th:inline="javascript">
+
+        let pageNum = 0;
+
+        $(document).ready(function () {
+
+            $('.book-more').click(function () {
+                $.ajax({
+                    url: '/member/my_view/more',
+                    data: {
+                        pageNum: pageNum + 1,
+                    },
+                    type: 'GET',
+
+                    success: function (response) {
+                        var myViewList = response.myViewList;
+                        var hasNext = response.hasNext;
+
+                        myViewList.forEach(function (book) {
+                            var imgPath = book.bookImg ? '/upload/' + book.bookImg : '/IMG/base_book_img.png';
+                            var chapterUrl = '/chapter/view/' + book.chapterId + '?bookId=' + book.bookId;
+                            var bookUrl = '/book/view/' + book.bookId;
+
+                            var element =
+                                '<li class="border-bottom book-card" data-book-id="' + book.bookId + '">' +
+                                '<div class="row m-3">' +
+                                '<div class="col-auto">' +
+                                '<img class="book-mini-img" src="' + imgPath + '" alt="">' +
+                                '</div>' +
+                                '<div class="col d-flex justify-content-between">' +
+                                '<div class="d-flex align-items-center">' +
+                                '<div>' +
+                                '<div>' +
+                                '<div class="fw-bolder fs-4">' + book.bookName + '</div>' +
+                                '<div class="text-black-50">' +
+                                '<span>최근 본 회차 :</span>' +
+                                '<span>' + book.chapterTitle + '</span>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="mt-2">' +
+                                '<button class="btn btn-outline-dark me-2" type="button">' +
+                                '<a href="' + chapterUrl + '">이어보기</a>' +
+                                '</button>' +
+                                '<button class="btn btn-outline-dark" type="button">' +
+                                '<a href="' + bookUrl + '">회차 더보기</a>' +
+                                '</button>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="d-flex align-items-center">' +
+                                '<a class="remove-btn" type="button"><img src="/IMG/remove-img.png" alt="" style="width: 40px; height: 40px"></a>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</li>'
+
+                            $('.my-view-list').append(element);
+                        })
+                        if (!hasNext) {
+                            $('.book-more').hide();
+                        }
+                        pageNum++;
+
+                    }
+
+                })
+            })
+
+            $('body').on('click', '.remove-btn', function (){
+                var bookId = $(this).closest('li').data('book-id');
+                var $li = $(this).closest('li');
+                console.log(bookId)
+                $.ajax({
+
+                    url: '/member/my_view/remove',
+                    data: {
+                        bookId: bookId
+                    },
+                    type: 'POST',
+
+                    success: function (){
+                        alert("삭제되었습니다.");
+                        $li.remove();
+                    },
+                })
+            })
+
+        })
+
+    </script>
+</main>
+</body>
+</html>

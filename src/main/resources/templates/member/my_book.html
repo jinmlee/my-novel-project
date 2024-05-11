@@ -16,8 +16,7 @@
                     <a class="col" th:href="@{'/member/my_book/' + ${myBook.getBookId()}}">
                         <div class="row">
                             <div class="col-auto">
-                                <img th:src="${myBook.bookImg != null} ? @{'/upload/' + ${myBook.bookImg}} : @{'/IMG/base_book_img.png'}"
-                                     style="border-radius: 10px; width: 120px;height: 150px;"/>
+                                <img class="book-mini-img" th:src="${myBook.bookImg != null} ? @{'/upload/' + ${myBook.bookImg}} : @{'/IMG/base_book_img.png'}"/>
                             </div>
                             <div class="col d-flex align-items-center">
                                 <h3 th:text="${myBook.bookName}"></h3>
@@ -34,8 +33,8 @@
             </li>
         </ul>
     </div>
-    <div th:if="${myBookSliceDto.hasNext}">
-        <button id="moreBooks">더 보기</button>
+    <div class="d-flex justify-content-center" th:if="${myBookSliceDto.hasNext}" >
+        <button class="btn" id="moreBooks">더 보기</button>
     </div>
 
     <script th:inline="javascript">
@@ -51,9 +50,30 @@
                         var myBookSliceDto = response.myBookSliceDto;
 
                         myBookList.forEach(function (book) {
-                            var imagePath = book.bookImg ? '/upload/' + book.bookImg : '/IMG/base_book_img.png'; // 예시 경로, 실제 경로로 변경 필요
+                            var imagePath = book.bookImg ? '/upload/' + book.bookImg : '/IMG/base_book_img.png';
                             var bookUrl = '/member/my_book/' + book.bookId;
-                            var bookElement = '<li><a href="' + bookUrl + '"><img src="' + imagePath + '"><span>' + book.bookId + '</span> <span>' + book.bookName + '</span></a></li>';
+                            var bookModifyUrl = '/book/modify/' + book.bookId;
+                            var chapterMakeUrl = '/chapter/make/' + book.bookId;
+                            var bookElement = `<li class="m-3">
+                <div class="row d-flex justify-content-between">
+                    <a class="col" href="${bookUrl}">
+                        <div class="row">
+                            <div class="col-auto">
+                                <img class="book-mini-img" src="${imagePath}"/>
+                            </div>
+                            <div class="col d-flex align-items-center">
+                                <h3>${book.bookName}</h3>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="col-5 d-flex align-items-center">
+                        <div class="row-5">
+                            <a href="${bookModifyUrl}"><div class="btn btn-outline-dark col me-2">작품 정보 수정</div></a>
+                            <a href="${chapterMakeUrl}"><div class="btn btn-outline-dark col me-2">회차/공지 쓰기</div></a>
+                        </div>
+                    </div>
+                </div>
+            </li>`;
                             $('.my-book-list').append(bookElement);
                         });
                         if (!myBookSliceDto.hasNext) {

@@ -8,6 +8,7 @@ import com.jinmlee.novel.entity.chapter.ChapterLike;
 import com.jinmlee.novel.repository.Book.BookRepository;
 import com.jinmlee.novel.repository.Chapter.ChapterLikeRepository;
 import com.jinmlee.novel.repository.Chapter.ChapterRepository;
+import com.jinmlee.novel.repository.Chapter.ChapterViewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,16 +42,26 @@ public class ChapterService {
 
         ChapterPageDto chapterPageDto = new ChapterPageDto(pageNum);
 
-        System.out.println(chapterPageDto.getPageNum());
-
         Page<ChapterListDto> chapterList = chapterRepository.findChapterList(bookId, getChapterPageable(chapterSortType, chapterPageDto));
+
+        if(chapterList.isEmpty()){
+            chapterPageDto.setEndPage(1);
+            chapterPageDto.setStartPage(1);
+            chapterPageDto.setTotalPage(1);
+            model.addAttribute("pageDto", chapterPageDto);
+            return new ArrayList<>();
+
+        }
+
         if(chapterPageDto.getPageNum() > chapterList.getTotalPages()){
             chapterPageDto.setPageNum(chapterList.getTotalPages());
             chapterList = chapterRepository.findChapterList(bookId, getChapterPageable(chapterSortType, chapterPageDto));
         }
         chapterPageDto.set(chapterList);
 
+
         model.addAttribute("pageDto", chapterPageDto);
+
         return chapterList.getContent();
     }
 

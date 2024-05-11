@@ -3,6 +3,7 @@ package com.jinmlee.novel.entity.Book;
 
 import com.jinmlee.novel.entity.Book.Book;
 import com.jinmlee.novel.entity.Member;
+import com.jinmlee.novel.entity.base.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BookSubscribe {
+public class BookSubscribe extends BaseTimeEntity {
 
     @Id @GeneratedValue
     private Long id;

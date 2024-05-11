@@ -1,17 +1,17 @@
-package com.jinmlee.novel.dto.book;
+package com.jinmlee.novel.dto.member;
 
-import com.jinmlee.novel.enums.Genre;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter @Getter
+@Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
-public class BookLibraryDto {
+public class MySubscribeDto {
     private Long bookId;
     private String bookName;
     private String author;
-    private Genre genre;
     private String bookImg;
+
 }

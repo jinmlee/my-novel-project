@@ -9,6 +9,17 @@ li {
 
 .book-mini-img{
     border-radius: 10px;
-    width: 80px;
-    height: 100px;
+    width: 120px;
+    height: 150px;
+}
+
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.text-truncate:hover {
+    overflow: visible;
+    white-space: normal;
+    cursor: pointer;
 }

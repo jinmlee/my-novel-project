@@ -18,7 +18,7 @@ public class IndexController {
     @GetMapping("/")
     public String index(Model model){
 
-
+        model.addAttribute("bookRankingList", bookService.getRankingList());
 
         return "index";
     }

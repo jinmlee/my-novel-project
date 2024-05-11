@@ -1,8 +1,10 @@
 package com.jinmlee.novel.repository.Book;
 
+import com.jinmlee.novel.dto.book.BookIndexDto;
 import com.jinmlee.novel.dto.book.BookInfoDto;
 import com.jinmlee.novel.dto.book.MyBookDto;
 import com.jinmlee.novel.entity.Book.Book;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,4 +42,13 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query("select b.bookName from Book b where b.id = :bookId")
     String findBookName(@Param("bookId") Long bookId);
+
+
+    @Query("select b.id, b.bookName, m.nickname, b.genre, i.storeFileName, count(distinct bs) as subscribesCnt, (count(distinct bs) + COALESCE(AVG(c.hits), 0)) AS rankingScore from Book b " +
+            "join b.member m left join BookSubscribe bs on bs.book = b left join Chapter c on c.book = b " +
+            "left join b.bookImg i " +
+            "group by b.id")
+    Page<Object[]> findRankingList(Pageable pageable);
+
+
 }

@@ -13,7 +13,7 @@ public class MyBookSliceDto {
     private int number;
     private boolean hasNext;
 
-    public void set(Slice<MyBookDto> myBookDtoSlice){
+    public void set(Slice<?> myBookDtoSlice){
         this.number = myBookDtoSlice.getNumber();
         this.hasNext = myBookDtoSlice.hasNext();
     }

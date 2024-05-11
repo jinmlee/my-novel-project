@@ -8,8 +8,46 @@
 </head>
 <body>
 <main>
-  나는 인덱스
+    <div>
+        <div>
+        <div class="m-3 fw-bolder fs-5">소설 랭킹 top 10</div>
+        </div>
+        <ul class="p-0 m-0 d-flex flex-lg-wrap">
+            <li class="m-2" th:each="book, i : ${bookRankingList}">
+                <a class="row" th:href="@{/book/view/{bookId}(bookId = ${book.bookId})}">
+                    <span class="col-auto fw-bolder" th:text="${i.count}"></span>
+                    <div class="col">
+                        <div class="">
+                            <div class="">
+                                <img class="rounded-3" style="width: 120px; height: 160px"
+                                     th:src="${book.bookImg != null} ? @{'/upload/' + ${book.bookImg}} : @{'/IMG/base_book_img.png'}">
+                            </div>
+                            <div class="" style="width: 150px;">
+                                <div class="d-flex text-truncate d-inline-block" th:title="${book.bookName}">
+                                    <div class="text-truncate d-inline-block fs-4 fw-bolder"
+                                         th:text="${book.bookName}"></div>
+                                </div>
+                                <div class="text-black-50">
+                                    <span th:text="${book.author}"></span>
+                                </div>
+                                <div class="text-black-50">
+                                    <span th:text="${book.genre.getGenreName()}"></span>
+                                </div>
+                                <div class="text-black-50">
+                                    <span>관심</span>
+                                    <span th:text="${book.subscribesCnt}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
 
+    <div>
+        <div class="m-3 fw-bolder fs-5">소설 랭킹 top 10</div>
+    </div>
 </main>
 
 

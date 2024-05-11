@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="layout/layout :: layout (~{::title}, ~{::main})"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>구독 작품</title>
+</head>
+<body>
+<main>
+    <div th:insert="~{fragment/my_info_nav :: my_info_nav}"></div>
+
+    <ul class="my-subscribe-list">
+        <li class="border-bottom" th:each="book : ${mySubscribeList}" th:data-book-id="${book.bookId}">
+            <div class="row m-3">
+                <div class="col-auto">
+                    <img class="book-mini-img"
+                         th:src="${book.bookImg != null} ? @{'/upload/' + ${book.bookImg}} : @{'/IMG/base_book_img.png'}">
+                </div>
+                <div class="col d-flex justify-content-between">
+                    <div class=" d-flex align-items-center">
+                        <div>
+                            <div>
+                                <div class="fw-bolder fs-4" th:text="${book.bookName}"></div>
+                            </div>
+                            <div>
+                                <div th:text="${book.author}"></div>
+                            </div>
+                            <div class="mt-2">
+                                <button class="btn btn-outline-dark"><a th:href="@{/book/view/{bookId}(bookId = ${book.bookId})}">책 보러 가기</a></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="remove-btn" type="button"><img src="/IMG/remove-img.png" alt=""
+                                                                   style="width: 40px; height: 40px"></div>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <div class="d-flex justify-content-center">
+        <button class="btn book-more" th:if="${mySubscribeList.hasNext()}">더보기</button>
+    </div>
+
+    <script th:inline="javascript">
+        let pageNum = 0;
+
+        $(document).ready(function () {
+
+            $('.book-more').click(function () {
+                $.ajax({
+                    url: '/member/my_subscribe/more',
+                    data: {
+                        pageNum: pageNum + 1,
+                    },
+                    type: 'GET',
+
+                    success: function (response) {
+
+                        var mySubscribeList = response.mySubscribeList;
+                        var hasNext = response.hasNext;
+
+                        mySubscribeList.forEach(function (book) {
+
+                            var imgPath = book.bookImg ? '/upload/' + book.bookImg : '/IMG/base_book_img.png';
+                            var bookUrl = '/book/view/' + book.bookId;
+
+                            var element = ` <li class="border-bottom" data-book-id="${book.bookId}">
+                                                    <div class="row m-3">
+                                                        <div class="col-auto">
+                                                            <img class="book-mini-img"
+                                                                 src="${imgPath}">
+                                                        </div>
+                                                        <div class="col d-flex justify-content-between">
+                                                            <div class=" d-flex align-items-center">
+                                                                <div>
+                                                                    <div>
+                                                                        <div class="fw-bolder fs-4">${book.bookName}</div>
+                                                                    </div>
+                                                                    <div>
+                                                                        <div>${book.author}</div>
+                                                                    </div>
+                                                                    <div class="mt-2">
+                                                                        <button class="btn btn-outline-dark">
+                                                                            <a href="${bookUrl}">책 보러 가기</a>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="d-flex align-items-center">
+                                                                <a class="remove-btn" type="button"><img src="/IMG/remove-img.png" alt="" style="width: 40px; height: 40px"></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>`
+
+                            $('.my-subscribe-list').append(element);
+
+                        })
+                        if (!hasNext) {
+                            $('.book-more').hide();
+                        }
+                        pageNum++;
+                    }
+                })
+            })
+
+            $('body').on('click', '.remove-btn', function () {
+                var bookId = $(this).closest('li').data('book-id');
+                var $li = $(this).closest('li');
+                console.log(bookId)
+                $.ajax({
+
+                    url: '/member/my_subscribe/remove',
+                    data: {
+                        bookId: bookId
+                    },
+                    type: 'POST',
+
+                    success: function () {
+                        alert("삭제되었습니다.");
+                        $li.remove();
+                    }
+                })
+            })
+
+        })
+
+    </script>
+
+</main>
+</body>
+</html>
