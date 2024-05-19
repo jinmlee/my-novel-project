@@ -2,11 +2,12 @@ package com.jinmlee.novel.service.book;
 
 
 import com.jinmlee.novel.dto.book.*;
+import com.jinmlee.novel.dto.book.PageDto;
 import com.jinmlee.novel.entity.Book.BookSubscribe;
 import com.jinmlee.novel.enums.Genre;
 import com.jinmlee.novel.repository.Book.BookSubscribeRepository;
 import com.jinmlee.novel.utils.FileStore;
-import com.jinmlee.novel.dto.auth.CustomUserDetails;
+import com.jinmlee.novel.dto.member.CustomUserDetails;
 import com.jinmlee.novel.entity.Book.Book;
 import com.jinmlee.novel.entity.Member;
 import com.jinmlee.novel.entity.file.FileEntity;
@@ -15,8 +16,10 @@ import com.jinmlee.novel.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,9 +71,52 @@ public class BookService {
         return bookRepository.findBookInfo(bookId);
     }
 
-    public List<BookInfoDto> getBookInfoList(){
-        return bookRepository.findBookInfoList();
+    public List<BookInfoDto> getBookInfoList(String sortType, String genre, String keyword, int pageNum, Model model){
+
+        PageDto pageDto = new PageDto(pageNum);
+        Genre selectGenre = null;
+        if(!genre.equals("all")){
+
+            selectGenre = Genre.valueOf(genre);
+        }
+
+        Page<BookInfoDto> bookList = bookRepository.findBookInfoList(keyword, selectGenre, getLibraryPageable(sortType, pageDto));
+
+        if(bookList.getTotalPages() < 1){
+            pageDto.setEndPage(1);
+            pageDto.setStartPage(1);
+            pageDto.setTotalPage(1);
+            model.addAttribute("pageDto", pageDto);
+            return new ArrayList<>();
+        }
+
+
+        if(pageDto.getPageNum() > bookList.getTotalPages()){
+            pageDto.setPageNum(bookList.getTotalPages());
+            bookList = bookRepository.findBookInfoList(keyword, selectGenre, getLibraryPageable(sortType, pageDto));
+        }
+        pageDto.set(bookList);
+
+        model.addAttribute("pageDto", pageDto);
+
+        return bookList.getContent();
     }
+
+    private Pageable getLibraryPageable(String sortType, PageDto pageDto){
+
+        return switch (sortType) {
+            case "hits" ->
+                    PageRequest.of(pageDto.getPageNum() - 1, pageDto.getPageSize(), Sort.by(Sort.Direction.DESC, "hits"));
+            case "createdDate" ->
+                    PageRequest.of(pageDto.getPageNum() - 1, pageDto.getPageSize(), Sort.by(Sort.Direction.DESC, "createdDate"));
+            case "lastModifiedDate" ->
+                    PageRequest.of(pageDto.getPageNum() - 1, pageDto.getPageSize(), Sort.by(Sort.Direction.DESC, "lastModifiedDate"));
+            case "subscribe" ->
+                    PageRequest.of(pageDto.getPageNum() - 1, pageDto.getPageSize(), Sort.by(Sort.Direction.DESC, "subscribe"));
+            default -> throw new IllegalArgumentException();
+        };
+    }
+
 
     public void modifyBook(BookMakeDto bookMakeDto, Long bookId) throws IOException {
         Book book = bookRepository.findById(bookId).get();
@@ -110,6 +156,10 @@ public class BookService {
             bookSubscribeRepository.save(bookSubscribe);
         }
         return true;
+    }
+
+    public void deleteMyBook(Long bookId){
+        bookRepository.deleteById(bookId);
     }
 
     public List<BookIndexDto> getRankingList(){

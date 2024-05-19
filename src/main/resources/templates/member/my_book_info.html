@@ -28,6 +28,7 @@
                     <a th:href="@{/chapter/make/{bookId}(bookId = ${myBookInfo.bookId})}">
                         <div class="btn btn-outline-dark col m-2">회차/공지 쓰기</div>
                     </a>
+                    <div class="delete-btn btn btn-outline-danger col m-2" type="button" th:data-book-id="${myBookInfo.bookId}">삭제 하기</div>
                 </div>
             </div>
         </div>
@@ -50,7 +51,7 @@
             <li class="m-3" th:each="chapter : ${chapterList}">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <a class="row" th:href="@{/chapter/view/{chapterId}(chapterId = ${chapter.id})}">
+                        <a class="row" th:href="@{/chapter/view/{chapterId}(chapterId = ${chapter.id}, bookId= ${myBookInfo.bookId})}">
                             <div class="col-auto">
                                 <img class="book-mini-img" th:src="${myBookInfo.bookImg != null} ? @{'/upload/' + ${myBookInfo.bookImg}} : @{'/IMG/base_book_img.png'}">
                             </div>
@@ -112,7 +113,30 @@
                 window.location.href = baseUrl + '?chapterSortType=' + sortType;
             })
 
+            $('.delete-btn').click(function (){
 
+                var bookId = $(this).data('book-id');
+
+                if(confirm('정말 삭제 하시겠습니까?')){
+                    $.ajax({
+                        url: '/book/delete', // 요청을 보낼 URL
+                        type: 'POST', // HTTP 메소드
+                        data: {
+                            bookId: bookId // 서버로 보낼 데이터
+                        },
+                        success: function(response) {
+                            // 성공적으로 삭제되었을 때 책 목록 페이지로 리디렉션
+                            window.location.href = '/member/my_book';
+                        },
+                        error: function(xhr, status, error) {
+                            // 오류 발생 시 오류 메시지를 표시
+                            alert('삭제 실패: ' + xhr.responseText);
+                        }
+                    });
+                }
+
+
+            })
         })
     </script>
 

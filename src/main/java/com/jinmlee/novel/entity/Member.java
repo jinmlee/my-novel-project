@@ -1,5 +1,6 @@
 package com.jinmlee.novel.entity;
 
+import com.jinmlee.novel.dto.member.MemberModifyDto;
 import com.jinmlee.novel.entity.base.BaseTimeEntity;
 import com.jinmlee.novel.enums.MyRole;
 import jakarta.persistence.*;
@@ -25,4 +26,12 @@ public class Member extends BaseTimeEntity {
     private String email;
     private String phoneNumber;
     private MyRole role;
+
+    public Member modify(MemberModifyDto memberModifyDto){
+        this.userName = memberModifyDto.getUserName();
+        this.nickname = memberModifyDto.getNickname();
+        this.email = memberModifyDto.getEmail();
+        this.phoneNumber = memberModifyDto.getPhoneNumber();
+        return this;
+    }
 }

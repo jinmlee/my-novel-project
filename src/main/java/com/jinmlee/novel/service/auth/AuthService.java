@@ -1,6 +1,6 @@
 package com.jinmlee.novel.service.auth;
 
-import com.jinmlee.novel.dto.auth.JoinDto;
+import com.jinmlee.novel.dto.member.JoinDto;
 import com.jinmlee.novel.entity.Member;
 import com.jinmlee.novel.enums.MyRole;
 import com.jinmlee.novel.repository.MemberRepository;

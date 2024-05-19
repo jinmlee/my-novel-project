@@ -1,5 +1,6 @@
 package com.jinmlee.novel.service.book;
 
+import com.jinmlee.novel.dto.book.PageDto;
 import com.jinmlee.novel.dto.book.chapter.*;
 import com.jinmlee.novel.entity.Book.Book;
 import com.jinmlee.novel.entity.Member;
@@ -8,7 +9,6 @@ import com.jinmlee.novel.entity.chapter.ChapterLike;
 import com.jinmlee.novel.repository.Book.BookRepository;
 import com.jinmlee.novel.repository.Chapter.ChapterLikeRepository;
 import com.jinmlee.novel.repository.Chapter.ChapterRepository;
-import com.jinmlee.novel.repository.Chapter.ChapterViewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +30,10 @@ public class ChapterService {
     private final RedisTemplate<String, Object> redisTemplate;
     public void makeChapter(ChapterMakeDto chapterMakeDto, Long bookId){
         Optional<Book> book = bookRepository.findById(bookId);
+        if(book.isEmpty()){
+            throw new IllegalArgumentException();
+        }
+        book.get().timeUpdate();
         chapterMakeDto.setContent(formatNewLines(chapterMakeDto.getContent()));
         Chapter chapter = chapterMakeDto.toEntity(book.get());
         chapterRepository.save(chapter);
@@ -40,37 +44,36 @@ public class ChapterService {
 
     public List<ChapterListDto> getChapterList(Long bookId, String chapterSortType, int pageNum, Model model){
 
-        ChapterPageDto chapterPageDto = new ChapterPageDto(pageNum);
+        PageDto pageDto = new PageDto(pageNum);
 
-        Page<ChapterListDto> chapterList = chapterRepository.findChapterList(bookId, getChapterPageable(chapterSortType, chapterPageDto));
+        Page<ChapterListDto> chapterList = chapterRepository.findChapterList(bookId, getChapterPageable(chapterSortType, pageDto));
 
-        if(chapterList.isEmpty()){
-            chapterPageDto.setEndPage(1);
-            chapterPageDto.setStartPage(1);
-            chapterPageDto.setTotalPage(1);
-            model.addAttribute("pageDto", chapterPageDto);
+        if(chapterList.getTotalPages() < 1){
+            pageDto.setEndPage(1);
+            pageDto.setStartPage(1);
+            pageDto.setTotalPage(1);
+            model.addAttribute("pageDto", pageDto);
             return new ArrayList<>();
-
         }
 
-        if(chapterPageDto.getPageNum() > chapterList.getTotalPages()){
-            chapterPageDto.setPageNum(chapterList.getTotalPages());
-            chapterList = chapterRepository.findChapterList(bookId, getChapterPageable(chapterSortType, chapterPageDto));
+
+        if(pageDto.getPageNum() > chapterList.getTotalPages()){
+            pageDto.setPageNum(chapterList.getTotalPages());
+            chapterList = chapterRepository.findChapterList(bookId, getChapterPageable(chapterSortType, pageDto));
         }
-        chapterPageDto.set(chapterList);
+        pageDto.set(chapterList);
 
-
-        model.addAttribute("pageDto", chapterPageDto);
+        model.addAttribute("pageDto", pageDto);
 
         return chapterList.getContent();
     }
 
-    private Pageable getChapterPageable(String chapterSortType, ChapterPageDto chapterPageDto){
+    private Pageable getChapterPageable(String chapterSortType, PageDto pageDto){
 
         if(chapterSortType.equals("DESC")){
-            return PageRequest.of(chapterPageDto.getPageNum() - 1, chapterPageDto.getPageSize(), Sort.by(Sort.Direction.DESC, "createdDate"));
+            return PageRequest.of(pageDto.getPageNum() - 1, pageDto.getPageSize(), Sort.by(Sort.Direction.DESC, "createdDate"));
         } else if (chapterSortType.equals("ASC")) {
-            return PageRequest.of(chapterPageDto.getPageNum() - 1, chapterPageDto.getPageSize(), Sort.by(Sort.Direction.ASC, "createdDate"));
+            return PageRequest.of(pageDto.getPageNum() - 1, pageDto.getPageSize(), Sort.by(Sort.Direction.ASC, "createdDate"));
         }
         throw new IllegalArgumentException();
     }

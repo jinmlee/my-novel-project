@@ -8,6 +8,34 @@
 <body>
 <main>
     <div th:insert="~{fragment/my_info_nav :: my_info_nav}"></div>
+
+    <div class="">
+        <div class="fs-3 fw-bolder mt-5">내 정보</div>
+        <div class="">
+            <div class="row fs-4 m-4 border-bottom">
+                <div class="col-2">이름</div>
+                <span class="col" th:text="${myInfo.userName}"></span>
+            </div>
+            <div class="row fs-4 m-4 border-bottom">
+                <div class="col-2">닉네임</div>
+                <span class="col" th:text="${myInfo.nickname}"></span>
+            </div>
+            <div class="row fs-4 m-4 border-bottom">
+                <div class="col-2">전화번호</div>
+                <span class="col" th:text="${myInfo.phoneNumber}"></span>
+            </div>
+            <div class="row fs-4 m-4 border-bottom">
+                <div class="col-2">e-mail</div>
+                <span class="col" th:text="${myInfo.email}"></span>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center">
+            <a class="btn btn-outline-dark m-2" th:href="@{/member/modify}" type="button">수정하기</a>
+            <a class="btn btn-outline-dark m-2" th:href="@{/member/modify_pwd}" type="button">비밀번호 변경</a>
+        </div>
+    </div>
+
 </main>
 </body>
 </html>

@@ -1,7 +1,7 @@
 package com.jinmlee.novel.service.auth;
 
 
-import com.jinmlee.novel.dto.auth.CustomUserDetails;
+import com.jinmlee.novel.dto.member.CustomUserDetails;
 import com.jinmlee.novel.entity.Member;
 import com.jinmlee.novel.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

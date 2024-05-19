@@ -19,4 +19,5 @@ public class BookInfoDto {
     private String bookIntro;
     private Genre genre;
     private String bookImg;
+    private Long hits;
 }

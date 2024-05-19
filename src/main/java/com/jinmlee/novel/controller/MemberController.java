@@ -1,14 +1,11 @@
 package com.jinmlee.novel.controller;
 
-import com.jinmlee.novel.dto.auth.CustomUserDetails;
+import com.jinmlee.novel.dto.member.*;
 import com.jinmlee.novel.dto.book.MyBookDto;
 import com.jinmlee.novel.dto.book.MyBookSliceDto;
-import com.jinmlee.novel.dto.member.MySubscribeDto;
-import com.jinmlee.novel.dto.member.MyViewDto;
 import com.jinmlee.novel.service.Member.MemberService;
 import com.jinmlee.novel.service.book.BookService;
 import com.jinmlee.novel.service.book.ChapterService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
@@ -16,7 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,10 +32,68 @@ public class MemberController {
     private final ChapterService chapterService;
 
     @GetMapping("/my_info")
-    public String myInfo(){
+    public String myInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                         Model model){
+
+        model.addAttribute("myInfo", memberService.getMyInfo(customUserDetails.getMember().getId()));
 
         return "member/my_info";
     }
+
+    @GetMapping("/modify")
+    public String modify(Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        model.addAttribute("memberModifyDto", memberService.getMyInfo(customUserDetails.getMember().getId()));
+        return "member/modify";
+    }
+
+    @PostMapping("/modify")
+    public String modifyProcess(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                @Validated @ModelAttribute MemberModifyDto memberModifyDto,
+                                BindingResult bindingResult,
+                                RedirectAttributes redirectAttributes,
+                                Model model){
+
+        if(!memberService.confirmPassword(customUserDetails.getMember(), memberModifyDto.getPassword())){
+            bindingResult.rejectValue("password", "error.password", "비밀번호가 일치하지 않습니다.");
+            return "member/modify";
+        }
+
+        if(bindingResult.hasErrors()){
+            return "member/modify";
+        }
+
+        memberService.modifyInfo(customUserDetails.getMember(), memberModifyDto);
+
+        return "redirect:/member/my_info";
+    }
+
+    @GetMapping("/modify_pwd")
+    public String modifyPwd(Model model){
+        model.addAttribute("modifyPwdDto", new ModifyPwdDto());
+        return "/member/modify_pwd";
+    }
+
+    @PostMapping("/modify_pwd")
+    public String modifyPwdProcess(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                   @Validated @ModelAttribute ModifyPwdDto modifyPwdDto,
+                                   BindingResult bindingResult,
+                                   RedirectAttributes redirectAttributes,
+                                   Model model){
+        if(!memberService.confirmPassword(customUserDetails.getMember(), modifyPwdDto.getOldPassword())){
+            model.addAttribute("passwordConfirmError",  "비밀번호가 일치하지 않습니다.");
+            return "member/modify_pwd";
+        }
+
+        if(bindingResult.hasErrors()){
+            return "member/modify_pwd";
+        }
+
+        memberService.modifyPassword(customUserDetails.getMember(), modifyPwdDto.getPassword());
+
+        return "redirect:/member/my_info";
+    }
+
+
 
     @GetMapping("/my_book")
     public String myBook(Model model,

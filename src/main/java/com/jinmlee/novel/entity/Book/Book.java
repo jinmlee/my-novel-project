@@ -3,6 +3,7 @@ package com.jinmlee.novel.entity.Book;
 import com.jinmlee.novel.dto.book.BookMakeDto;
 import com.jinmlee.novel.entity.Member;
 import com.jinmlee.novel.entity.base.BaseTimeEntity;
+import com.jinmlee.novel.entity.chapter.Chapter;
 import com.jinmlee.novel.entity.file.FileEntity;
 import com.jinmlee.novel.enums.Genre;
 import jakarta.persistence.*;
@@ -11,6 +12,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -38,6 +42,12 @@ public class Book extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "file_id")
     private FileEntity bookImg;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Chapter> chapterList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<BookSubscribe> bookSubscribeList = new ArrayList<>();
 
     public void modify(BookMakeDto bookMakeDto, FileEntity fileEntity){
         this.bookName = bookMakeDto.getBookName();

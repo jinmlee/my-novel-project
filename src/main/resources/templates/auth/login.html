@@ -6,28 +6,36 @@
     <title>login</title>
 </head>
 <body>
-<main class="form-signin w-100 m-auto">
-    <form th:action="@{/auth/login}" method="post" name="loginForm">
-        <h1 class="h3 mb-3 fw-normal">로그인</h1>
+<main>
+    <div class="d-flex justify-content-center">
+        <div class="d-flex align-items-center justify-content-center w-25">
+            <div class="form-signin w-100 m-auto">
+                <form th:action="@{/auth/login}" method="post" name="loginForm">
+                    <div class="d-flex justify-content-center">
+                        <h1 class="h3 mb-3 fw-normal">로그인</h1>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="userId" name="userId" placeholder="loginId">
+                        <label for="userId">loginId</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="floatingPassword" name="password"
+                               placeholder="Password">
+                        <label for="floatingPassword">Password</label>
+                    </div>
 
-        <div class="form-floating">
-            <input type="text" class="form-control" id="userId" name="userId" placeholder="loginId">
-            <label for="userId">loginId</label>
+                    <div class="form-check text-start my-3">
+                        <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Remember me
+                        </label>
+                    </div>
+                    <button class="btn btn-dark w-100 py-2" type="submit">로그인</button>
+                    <p class="mt-5 mb-3 text-body-secondary">© 2017–2024</p>
+                </form>
+            </div>
         </div>
-        <div class="form-floating">
-            <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password">
-            <label for="floatingPassword">Password</label>
-        </div>
-
-        <div class="form-check text-start my-3">
-            <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
-            <label class="form-check-label" for="flexCheckDefault">
-                Remember me
-            </label>
-        </div>
-        <button class="btn btn-primary w-100 py-2" type="submit">로그인</button>
-        <p class="mt-5 mb-3 text-body-secondary">© 2017–2024</p>
-    </form>
+    </div>
 </main>
 </body>
 </html>

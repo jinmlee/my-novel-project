@@ -1,5 +1,6 @@
-package com.jinmlee.novel.dto.auth;
+package com.jinmlee.novel.dto.member;
 
+import com.jinmlee.novel.entity.Member;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,4 +31,16 @@ public class JoinDto {
     private String email;
     @NotBlank(message = "핸드폰 번호는 필수 입력사항입니다.")
     private String phoneNumber;
+
+
+    public JoinDto fromEntity(Member member) {
+        this.userId = member.getUserId();
+        this. userName = member.getUserName();
+        this.nickname = member.getNickname();
+        this.password = member.getPassword();
+        this.email = member.getEmail();
+        this.phoneNumber = member.getPhoneNumber();
+
+        return this;
+    }
 }

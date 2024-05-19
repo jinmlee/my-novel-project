@@ -1,6 +1,6 @@
 package com.jinmlee.novel.controller;
 
-import com.jinmlee.novel.dto.auth.CustomUserDetails;
+import com.jinmlee.novel.dto.member.CustomUserDetails;
 import com.jinmlee.novel.dto.comment.CommentDto;
 import com.jinmlee.novel.dto.comment.CommentSliceDto;
 import com.jinmlee.novel.service.comment.CommentService;

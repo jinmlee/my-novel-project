@@ -4,6 +4,7 @@ import com.jinmlee.novel.dto.book.BookIndexDto;
 import com.jinmlee.novel.dto.book.BookInfoDto;
 import com.jinmlee.novel.dto.book.MyBookDto;
 import com.jinmlee.novel.entity.Book.Book;
+import com.jinmlee.novel.enums.Genre;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -26,19 +27,27 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("SELECT COUNT(b) > 0 FROM Book b WHERE b.id = :bookId AND b.member.id = :userId")
     boolean existsByIdAndMemberId(@Param("bookId") Long bookId, @Param("userId") Long userId);
 
-    @Query("select new com.jinmlee.novel.dto.book.BookInfoDto(b.id, m.nickname, b.bookName, b.bookIntroduction, b.genre, i.storeFileName) " +
+    @Query("select new com.jinmlee.novel.dto.book.BookInfoDto(b.id, m.nickname, b.bookName, b.bookIntroduction, b.genre, i.storeFileName, count(bs)) " +
             "from Book b " +
             "join b.member m " +
             "left join b.bookImg i " +
-            "where b.id = :bookId")
+            "left join BookSubscribe bs on bs.book = b " +
+            "where b.id = :bookId " +
+            "group by b")
     BookInfoDto findBookInfo(@Param("bookId") Long bookId);
 
 
-    @Query("select new com.jinmlee.novel.dto.book.BookInfoDto(b.id, m.nickname, b.bookName, b.bookIntroduction, b.genre, i.storeFileName) " +
+    @Query("select new com.jinmlee.novel.dto.book.BookInfoDto(b.id, m.nickname, b.bookName, b.bookIntroduction, b.genre, i.storeFileName, count(distinct bs)),count(distinct bs) as subscribe , coalesce(sum (cl.hits), 0) as hits " +
             "from Book b " +
             "join b.member m " +
-            "left join b.bookImg i")
-    List<BookInfoDto> findBookInfoList();
+            "left join b.bookImg i " +
+            "left join BookSubscribe bs on bs.book = b " +
+            "left join b.chapterList cl " +
+            "where (:genre is null or b.genre = :genre) and (b.bookName like lower(concat('%', :keyword, '%')) or m.nickname like lower(concat('%', :keyword, '%'))) " +
+            "group by b")
+    Page<BookInfoDto> findBookInfoList(@Param("keyword") String keyword, @Param("genre") Genre genre, Pageable pageable);
+
+
 
     @Query("select b.bookName from Book b where b.id = :bookId")
     String findBookName(@Param("bookId") Long bookId);
@@ -49,6 +58,4 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "left join b.bookImg i " +
             "group by b.id")
     Page<Object[]> findRankingList(Pageable pageable);
-
-
 }

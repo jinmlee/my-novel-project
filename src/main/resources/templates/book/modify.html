@@ -7,45 +7,107 @@
 </head>
 <body>
 <main>
+
     <div class="container">
-        <form th:action="@{/book/modify/{bookId}(bookId = ${bookId})}" th:object="${bookId}" method="post" enctype="multipart/form-data">
-            <h4>책 수정</h4>
-            <div th:object="${bookInfo}">
-                <div class="col">
-                    <div class="row">
-                        <label for="bookName">책 제목</label>
-                        <input type="text" id="bookName" name="bookName" th:value="${bookInfo.bookName}">
-                    </div>
-                    <div class="row">
-                        <label for="bookImg">이미지</label>
-                        <input type="file" id="bookImg" name="bookImg">
-                        <img th:src="${bookInfo.bookImg != null} ? @{'/upload/' + ${bookInfo.bookImg}} : @{'/IMG/base_book_img.png'}"
-                             style="border-radius: 10px;width: 120px;height: 150px;"/>
-                    </div>
+        <form th:action="@{/book/modify/{bookId}(bookId = ${bookId})}" th:object="${bookId}" method="post"
+              enctype="multipart/form-data">
+            <div class="border border-success">
+                <div class="border-bottom">
+                    <h4 class="m-4 text-black-50">책 정보 수정</h4>
+                </div>
 
-                    <div class="row">
+                <div class="d-flex justify-content-center">
+                    <div class="border-bottom row w-100">
+                        <div class="fw-bolder ms-4 col-auto d-flex align-items-center">제목</div>
+                        <input class="m-4 col form-control" type="text" id="bookName" name="bookName"
+                               th:value="${bookInfo.bookName}">
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center border-bottom">
+                    <div class="row w-100 mt-3 mb-3">
+                        <div class="fw-bolder ms-4 col-auto d-flex align-items-center">책 사진</div>
                         <div class="col">
-                            <label for="genre">장르</label>
-                            <select id="genre" name="genre">
-                                <option th:each="genre : ${Genre}" th:value="${genre.name()}"
-                                        th:text="${genre.getGenreName()}"></option>
-                            </select>
+                            <span class="text-black-50">기존 이미지</span>
+                            <img th:src="${bookInfo.bookImg != null} ? @{'/upload/' + ${bookInfo.bookImg}} : @{'/IMG/base_book_img.png'}"
+                                 style="border-radius: 10px; width: 120px;height: 150px;"/>
                         </div>
+                        <div class="col">
+                            <span class="text-black-50">새 이미지</span>
+                            <img id="bookImagePreview" src="/IMG/base_book_img.png"
+                                 style="border-radius: 10px; width: 120px; height: 150px;">
+                        </div>
+                        <input type="file" class="form-control m-4 col" id="bookImg" name="bookImg">
                     </div>
+                </div>
 
-                    <div class="row">
-                        <label for="bookIntroduction">책 소개</label>
-                        <textarea id="bookIntroduction" name="bookIntroduction" maxlength="300"
-                                  style="height: 300px;" th:text="${bookInfo.bookIntro}"></textarea>
+                <div class="d-flex justify-content-center">
+                    <div class="border-bottom row w-100">
+                        <label class="fw-bolder ms-4 col-auto d-flex align-items-center" th:text="장르" for="genre">
+                        </label><select class="form-control m-4 col" id="genre" name="genre">
+                        <option th:each="genre : ${Genre}" th:value="${genre.name()}"
+                                th:text="${genre.getGenreName()}"
+                                th:selected="${genre.name() == bookInfo.genre.name()}"></option>
+                    </select>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <div class="border-bottom row w-100">
+                        <label class="m-4 fw-bolder" for="bookIntroduction">책 소개</label>
+                        <textarea class="form-control border-bottom" id="bookIntroduction" maxlength="300"
+                                  name="bookIntroduction" style="height: 300px;"
+                                  th:text="${bookInfo.bookIntro}"></textarea>
                         <div id="remaining"></div>
                     </div>
                 </div>
-                <div>
-                    <button class="btn btn-primary w-100 py-2" type="submit">저장</button>
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="m-4 btn btn-outline-info">저장</button>
                 </div>
             </div>
         </form>
     </div>
+
+
+    <!--    <div class="container">-->
+    <!--        <form th:action="@{/book/modify/{bookId}(bookId = ${bookId})}" th:object="${bookId}" method="post" enctype="multipart/form-data">-->
+    <!--            <h4>책 수정</h4>-->
+    <!--            <div th:object="${bookInfo}">-->
+    <!--                <div class="col">-->
+    <!--                    <div class="row">-->
+    <!--                        <label for="bookName">책 제목</label>-->
+    <!--                        <input type="text" id="bookName" name="bookName" th:value="${bookInfo.bookName}">-->
+    <!--                    </div>-->
+    <!--                    <div class="row">-->
+    <!--                        <label for="bookImg">이미지</label>-->
+    <!--                        <input type="file" id="bookImg" name="bookImg">-->
+    <!--                        <img th:src="${bookInfo.bookImg != null} ? @{'/upload/' + ${bookInfo.bookImg}} : @{'/IMG/base_book_img.png'}"-->
+    <!--                             style="border-radius: 10px;width: 120px;height: 150px;"/>-->
+    <!--                    </div>-->
+
+    <!--                    <div class="row">-->
+    <!--                        <div class="col">-->
+    <!--                            <label for="genre">장르</label>-->
+    <!--                            <select id="genre" name="genre">-->
+    <!--                                <option th:each="genre : ${Genre}" th:value="${genre.name()}"-->
+    <!--                                        th:text="${genre.getGenreName()}"></option>-->
+    <!--                            </select>-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+
+    <!--                    <div class="row">-->
+    <!--                        <label for="bookIntroduction">책 소개</label>-->
+    <!--                        <textarea id="bookIntroduction" name="bookIntroduction" maxlength="300"-->
+    <!--                                  style="height: 300px;" th:text="${bookInfo.bookIntro}"></textarea>-->
+    <!--                        <div id="remaining"></div>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--                <div>-->
+    <!--                    <button class="btn btn-primary w-100 py-2" type="submit">저장</button>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </form>-->
+    <!--    </div>-->
 
 
     <script>
@@ -59,7 +121,22 @@
 
             remaining.textContent = charsLeft + ' 글자 남음';
         });
+
+
+        document.getElementById('bookImg').addEventListener('change', function (event) {
+            var file = event.target.files[0]; // 사용자가 선택한 파일 가져오기
+            if (file) {
+                var reader = new FileReader(); // FileReader 객체 생성
+                reader.onload = function (e) {
+                    var imgElement = document.getElementById('bookImagePreview'); // 이미지를 보여줄 요소 선택
+                    imgElement.src = e.target.result; // 이미지 미리보기로 파일의 내용을 설정
+                };
+                reader.readAsDataURL(file); // 파일 읽기
+            }
+        });
+
     </script>
+
 </main>
 </body>
 </html>

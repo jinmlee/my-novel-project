@@ -1,6 +1,7 @@
-package com.jinmlee.novel.dto.book.chapter;
+package com.jinmlee.novel.dto.book;
 
 
+import com.jinmlee.novel.dto.book.chapter.ChapterListDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,7 @@ import org.springframework.data.domain.Page;
 
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
-public class ChapterPageDto {
+public class PageDto {
     int pageGroupSize = 5;
     int pageSize = 10;
     int pageNum;
@@ -20,16 +21,16 @@ public class ChapterPageDto {
     int nextGroup;
     int previousGroup;
 
-    public ChapterPageDto(int pageNum){
+    public PageDto(int pageNum){
         if(pageNum < 1){
             pageNum = 1;
         }
         this.pageNum = pageNum;
     }
 
-    public void set(Page<ChapterListDto> chapterList){
-        this.pageNum = chapterList.getNumber() + 1;
-        this.totalPage = chapterList.getTotalPages();
+    public void set(Page<?> pageList){
+        this.pageNum = pageList.getNumber() + 1;
+        this.totalPage = pageList.getTotalPages();
         this.pageGroup = (int)Math.ceil((double) pageNum / pageGroupSize);
         this.startPage = ((pageGroup - 1) * pageGroupSize) + 1;
         this.endPage = pageGroup * pageGroupSize;

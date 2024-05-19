@@ -1,6 +1,6 @@
 package com.jinmlee.novel.controller;
 
-import com.jinmlee.novel.dto.auth.JoinDto;
+import com.jinmlee.novel.dto.member.JoinDto;
 import com.jinmlee.novel.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

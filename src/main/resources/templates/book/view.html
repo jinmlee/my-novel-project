@@ -14,8 +14,22 @@
                      style="border-radius: 10px;width: 200px;height: 250px;">
             </div>
             <div class="col-8 d-flex align-items-start flex-column bd-highlight mb-3">
-                <div class="title mb-auto p-2 bd-highlight">
-                    <div class="fs-1 fw-bolder" th:text="${bookInfo.bookName}"></div>
+                <div class="title mb-auto p-2 bd-highlight d-flex justify-content-between" style="width: 100%">
+                    <div class="fs-3 fw-bolder" th:text="${bookInfo.bookName}"></div>
+                    <div class="d-flex align-items-center">
+                        <div class="subscribe-btn d-flex justify-content-center" type="button"
+                             th:data-book-id="${bookInfo.bookId}">
+                            <div class="d-flex align-items-center">
+                                <div class="d-flex justify-content-center me-1">
+                                    <img th:src="${Subscribed} ? @{/IMG/subscribe-icon-check.png} : @{/IMG/subscribe-icon-none.png}"
+                                         style="width: 30px; height: 30px">
+                                </div>
+                                <div class="me-1">구독</div>
+                                <div class="subscribe-cnt text-black-50 text-center"
+                                     th:text="${bookInfo.hits}"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="intro p-2 bd-highlight">
                     <div class="text-break" th:text="${bookInfo.getBookIntro()}"></div>
@@ -34,15 +48,20 @@
                                                                 th:text=" '(' + ${#lists.size(chapterList)} + ')'"></span>
             </div>
             <div class="col">
-                <div class="btn sortTypeBtn text-black-50 fw-bolder" th:classappend="${chapterSortType == 'DESC'} ? 'active'" th:value="DESC">최신순</div>
-                <div class="btn sortTypeBtn text-black-50 fw-bolder" th:classappend="${chapterSortType == 'ASC'} ? 'active'" th:value="ASC">1화부터</div>
+                <div class="btn sortTypeBtn text-black-50 fw-bolder"
+                     th:classappend="${chapterSortType == 'DESC'} ? 'active'" th:value="DESC">최신순
+                </div>
+                <div class="btn sortTypeBtn text-black-50 fw-bolder"
+                     th:classappend="${chapterSortType == 'ASC'} ? 'active'" th:value="ASC">1화부터
+                </div>
             </div>
         </div>
         <ul class="p-0 m-0">
             <li class="m-3" th:each="chapter : ${chapterList}">
                 <a class="row" th:href="@{/chapter/view/{chapterId}(chapterId = ${chapter.id}, bookId = ${bookId})}">
                     <div class="col-auto">
-                        <img class="book-mini-img" th:src="${bookInfo.bookImg != null} ? @{'/upload/' + ${bookInfo.bookImg}} : @{'/IMG/base_book_img.png'}">
+                        <img class="book-mini-img"
+                             th:src="${bookInfo.bookImg != null} ? @{'/upload/' + ${bookInfo.bookImg}} : @{'/IMG/base_book_img.png'}">
                     </div>
                     <div class="col d-flex align-items-center">
                         <div class="col">
@@ -61,15 +80,22 @@
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                     <li class="page-item" th:classappend="${pageDto.pageNum == 1} ? 'disabled'">
-                        <a class="previous-btn page-link" th:href="@{/book/view/{bookId}(bookId=${bookId}, pageNum=${pageDto.getPreviousGroup}, chapterSortType=${chapterSortType})}" aria-label="Previous">
+                        <a class="previous-btn page-link"
+                           th:href="@{/book/view/{bookId}(bookId=${bookId}, pageNum=${pageDto.getPreviousGroup}, chapterSortType=${chapterSortType})}"
+                           aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li class="page-item" th:each="i : ${#numbers.sequence(pageDto.startPage, pageDto.endPage)}" th:classappend="${i == pageDto.pageNum} ? 'active'">
-                        <a class="page-link" th:href="@{/book/view/{bookId}(bookId=${bookId}, pageNum=${i}, chapterSortType=${chapterSortType})}" th:text="${i}"></a>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(pageDto.startPage, pageDto.endPage)}"
+                        th:classappend="${i == pageDto.pageNum} ? 'active'">
+                        <a class="page-link"
+                           th:href="@{/book/view/{bookId}(bookId=${bookId}, pageNum=${i}, chapterSortType=${chapterSortType})}"
+                           th:text="${i}"></a>
                     </li>
                     <li class="page-item" th:classappend="${pageDto.pageNum == pageDto.totalPage} ? 'disabled'">
-                        <a class="next-btn page-link" th:href="@{/book/view/{bookId}(bookId=${bookId}, pageNum=${pageDto.getNextGroup}, chapterSortType=${chapterSortType})}" aria-label="Next">
+                        <a class="next-btn page-link"
+                           th:href="@{/book/view/{bookId}(bookId=${bookId}, pageNum=${pageDto.getNextGroup}, chapterSortType=${chapterSortType})}"
+                           aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -89,6 +115,39 @@
                 var baseUrl = currentUrl.split('?')[0];
 
                 window.location.href = baseUrl + '?chapterSortType=' + sortType;
+            })
+
+
+        })
+
+
+        $('.subscribe-btn').click(function (){
+
+            var bookId = $(this).data('book-id');
+            var $this = $(this);
+            var $subscribeCnt = $this.find('.subscribe-cnt')
+            var currentSubscribe = parseInt($subscribeCnt.text(),10);
+
+            $.ajax({
+                url: '/book/addSubscribe',
+                method: 'POST',
+                data:{
+                    bookId: bookId
+                },
+
+                success: function (response){
+                    var isSubscribe = response.isSubscribe;
+                    var newSrc = isSubscribe ? '/IMG/subscribe-icon-check.png' : '/IMG/subscribe-icon-none.png'
+                    var newSubscribeCnt = isSubscribe ? currentSubscribe + 1 : currentSubscribe - 1;
+
+                    $this.find('img').attr('src', newSrc);
+                    $subscribeCnt.text(newSubscribeCnt);
+                },
+                error: function (error){
+                    alert('구독 상태 변경 중 오류 발생');
+                    console.error('Error:', error);
+                }
+
             })
 
 

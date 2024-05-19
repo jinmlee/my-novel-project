@@ -1,4 +1,4 @@
-package com.jinmlee.novel.dto.auth;
+package com.jinmlee.novel.dto.member;
 
 import com.jinmlee.novel.entity.Member;
 import lombok.Data;
