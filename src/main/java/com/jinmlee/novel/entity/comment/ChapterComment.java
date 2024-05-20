@@ -17,6 +17,11 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Builder
+@Table(
+        indexes = {
+                @Index(name = "idx_chapter_id", columnList = "chapter_id")
+        }
+)
 public class ChapterComment extends BaseTimeEntity {
 
     @Id

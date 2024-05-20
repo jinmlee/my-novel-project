@@ -39,18 +39,26 @@
                 <a th:href="@{/book/view/{bookId}(bookId = ${book.bookId})}">
                     <div class="card">
                         <div class="card-body row g-0">
-                            <div class="col-auto m-3">
+                            <div class="col-auto m-3 d-flex align-items-center">
                                 <img th:src="${book.bookImg != null} ? @{'/upload/' + ${book.bookImg}} : @{'/IMG/base_book_img.png'}"
-                                     style="border-radius: 10px;width: 200px;height: 250px;">
+                                     style="border-radius: 10px;width: 150px;height: 200px;">
                             </div>
-                            <div class="col-md-3 m-3 d-flex align-items-start flex-column bd-highlight">
-                                <div class="mb-auto bd-highlight">
-                                    <h3 class="card-title fw-bolder" th:text="${book.bookName}"></h3>
-                                    <div class="fw-bolder" th:text="${book.author}"></div>
+                            <div class="col-md-3 m-2 d-flex align-items-start flex-column bd-highlight">
+                                <div class="mb-auto bd-highlight border-bottom w-100">
+                                    <h3 class="card-title fw-bolder m-2" th:text="${book.bookName}"></h3>
+                                    <div class="fw-bolder m-2 text-black-50" th:text="${book.author}"></div>
                                 </div>
-                                <div class="bd-highlight row">
-                                    <div class="col-auto me-2">장르</div>
-                                    <div class="col-auto" th:text="${book.genre.getGenreName()}">장르</div>
+                                <div class="bd-highlight row fw-bolder">
+                                    <div class="col-auto m-1">구독</div>
+                                    <div class="col-auto m-1" th:text="${book.hits}"></div>
+                                </div>
+                                <div class="bd-highlight row fw-bolder">
+                                    <div class="col-auto m-1">회차</div>
+                                    <div class="col-auto m-1" th:text="${book.chapterCount}"></div>
+                                </div>
+                                <div class="bd-highlight row fw-bolder">
+                                    <div class="col-auto m-1">장르</div>
+                                    <div class="col-auto m-1" th:text="${book.genre.getGenreName()}">장르</div>
                                 </div>
                             </div>
                             <div class="col-md-5 m-3">

@@ -9,17 +9,23 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Table(
         name = "chapter_like",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"chapter_id", "member_id"})
+        },
+        indexes = {
+                @Index(name = "idx_chapter_id", columnList = "chapter_id"),
+                @Index(name = "idx_member_id", columnList = "member_id")
         }
 )
 public class ChapterLike {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -99,13 +99,13 @@
                         <div class="m-1 d-flex justify-content-between w-100">
                             <div class="m-0 text-black-50 fs-6" th:text="${comment.getTime()}"></div>
                             <div class="row m-0">
-                                <button class="btn-outline-primary reaction-button col btn btn-close-white border m-1"
+                                <button class="btn-outline-primary reaction-button col-auto btn btn-close-white border m-1"
                                         th:classappend="${comment.loggedReaction == 1} ? 'active'" th:value="1">
                                     <img th:src="@{/IMG/free-icon-thumbs-up-12709173.png}"
                                          style="height: 20px; width: 20px;">
                                     <span class="badge bg-white text-black" th:text="${comment.goodPoint}"></span>
                                 </button>
-                                <button class="btn-outline-danger reaction-button col btn btn-close-white border m-1"
+                                <button class="btn-outline-danger reaction-button col-auto btn btn-close-white border m-1"
                                         th:classappend="${comment.loggedReaction == -1} ? 'active'" th:value="-1">
                                     <img th:src="@{/IMG/free-icon-thumbs-down-14507870.png}"
                                          style="height: 20px; width: 20px">

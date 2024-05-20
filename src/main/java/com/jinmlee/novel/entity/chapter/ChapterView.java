@@ -17,7 +17,10 @@ import java.time.LocalDateTime;
 @Table(
         name = "chapter_view",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"chapter_id", "member_id"})
+                @UniqueConstraint(columnNames = {"member_id", "chapter_id"})
+        },
+        indexes = {
+                @Index(name = "idx_member_id", columnList = "member_id")
         }
 )
 public class ChapterView extends BaseTimeEntity {

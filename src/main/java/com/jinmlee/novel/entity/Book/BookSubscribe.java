@@ -15,6 +15,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(
+        indexes = {
+                @Index(name = "idx_member_id", columnList = "member_id"),
+                @Index(name = "idx_book_id", columnList = "book_id")
+        }
+)
 public class BookSubscribe extends BaseTimeEntity {
 
     @Id @GeneratedValue

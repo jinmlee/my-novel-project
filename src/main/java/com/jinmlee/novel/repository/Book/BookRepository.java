@@ -27,9 +27,10 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("SELECT COUNT(b) > 0 FROM Book b WHERE b.id = :bookId AND b.member.id = :userId")
     boolean existsByIdAndMemberId(@Param("bookId") Long bookId, @Param("userId") Long userId);
 
-    @Query("select new com.jinmlee.novel.dto.book.BookInfoDto(b.id, m.nickname, b.bookName, b.bookIntroduction, b.genre, i.storeFileName, count(bs)) " +
+    @Query("select new com.jinmlee.novel.dto.book.BookInfoDto(b.id, m.nickname, b.bookName, b.bookIntroduction, b.genre, i.storeFileName, count(distinct bs), count (cl)) " +
             "from Book b " +
             "join b.member m " +
+            "left join b.chapterList cl " +
             "left join b.bookImg i " +
             "left join BookSubscribe bs on bs.book = b " +
             "where b.id = :bookId " +
@@ -37,7 +38,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     BookInfoDto findBookInfo(@Param("bookId") Long bookId);
 
 
-    @Query("select new com.jinmlee.novel.dto.book.BookInfoDto(b.id, m.nickname, b.bookName, b.bookIntroduction, b.genre, i.storeFileName, count(distinct bs)),count(distinct bs) as subscribe , coalesce(sum (cl.hits), 0) as hits " +
+    @Query("select new com.jinmlee.novel.dto.book.BookInfoDto(b.id, m.nickname, b.bookName, b.bookIntroduction, b.genre, i.storeFileName, count(distinct bs), count (cl)),count(distinct bs) as subscribe , coalesce(sum (cl.hits), 0) as hits " +
             "from Book b " +
             "join b.member m " +
             "left join b.bookImg i " +

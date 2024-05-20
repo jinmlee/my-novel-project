@@ -20,4 +20,5 @@ public class BookInfoDto {
     private Genre genre;
     private String bookImg;
     private Long hits;
+    private Long chapterCount;
 }

@@ -13,7 +13,7 @@
         <div class="m-3 fw-bolder fs-5">소설 랭킹 top 10</div>
         </div>
         <ul class="p-0 m-0 d-flex flex-lg-wrap">
-            <li class="m-2" th:each="book, i : ${bookRankingList}">
+            <li class="mb-4" th:each="book, i : ${bookRankingList}">
                 <a class="row" th:href="@{/book/view/{bookId}(bookId = ${book.bookId})}">
                     <span class="col-auto fw-bolder" th:text="${i.count}"></span>
                     <div class="col">

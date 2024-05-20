@@ -16,6 +16,9 @@ import lombok.NoArgsConstructor;
         name = "comment_reaction",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"comment_id", "member_id"})
+        },
+        indexes = {
+                @Index(name = "idx_comment_id_member_id", columnList = "comment_id, member_id"),
         }
 )
 public class CommentReaction {

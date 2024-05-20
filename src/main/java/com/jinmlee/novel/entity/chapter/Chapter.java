@@ -19,6 +19,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(indexes = {
+        @Index(name = "idx_book_id", columnList = "book_id"),
+})
 public class Chapter extends BaseTimeEntity {
 
     @Id @GeneratedValue
